@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -13,7 +13,8 @@ import java.util.Date;
 
 @Service
 public class TokenService {
-    private String secretKey = "token-secret-key";
+
+    private String secretKey=jwt.secret_key;
 
     @PostConstruct
     protected void init() {
@@ -45,7 +46,7 @@ public class TokenService {
 
     public boolean verifyToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().build()
+            Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token);
             return claims.getBody()
@@ -57,6 +58,6 @@ public class TokenService {
     }
 
     public String getUid(String token) {
-        return Jwts.parserBuilder().build().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 }
