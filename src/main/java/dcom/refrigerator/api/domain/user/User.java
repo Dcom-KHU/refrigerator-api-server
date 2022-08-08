@@ -20,6 +20,9 @@ public class User {
     @Column(length = 128)
     private String nickname;
 
+    @Column(length = 128)
+    private String email;
+
     @Column
     private Integer point;
 
