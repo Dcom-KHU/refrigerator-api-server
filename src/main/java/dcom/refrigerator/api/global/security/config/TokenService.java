@@ -4,17 +4,22 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
-
+@Slf4j
 @Service
 public class TokenService {
 
-    private String secretKey=jwt.secret_key;
+
+    @Value("${jwt.secret_key}")
+    private String secretKey;
+
+
 
     @PostConstruct
     protected void init() {
@@ -22,8 +27,9 @@ public class TokenService {
     }
 
     public Token generateToken(String uid, String role) {
+
         long tokenPeriod = 1000L * 60L * 10L;
-        long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
+        long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 2L;
 
         Claims claims = Jwts.claims().setSubject(uid);
         claims.put("role", role);
