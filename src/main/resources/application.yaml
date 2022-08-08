@@ -1,6 +1,7 @@
 spring:
-  profiles:
-    include: oauth
+  config:
+    import:
+      - classpath:./application-oauth.yml
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/refrigerator
     username: root
