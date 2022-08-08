@@ -4,10 +4,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @ToString
 @Builder(access = AccessLevel.PRIVATE)
 @Getter
@@ -24,13 +26,17 @@ class OAuth2Attribute {
             /*case "google":
                 return ofGoogle(attributeKey, attributes);*/
             case "kakao":
+                log.info("kakao");
                 return ofKakao("email", attributes);
             case "naver":
-                return ofNaver("id", attributes);
+                log.info("naver");
+
+                return ofNaver("email", attributes);
             default:
                 throw new RuntimeException();
         }
     }
+
 
     /*private static OAuth2Attribute ofGoogle(String attributeKey,
                                             Map<String, Object> attributes) {
@@ -48,6 +54,13 @@ class OAuth2Attribute {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
 
+
+        log.info("kakaoAccount");
+        log.info("{}",kakaoAccount);
+
+        log.info("kakaoProfile");
+        log.info("{}",kakaoProfile);
+
         return OAuth2Attribute.builder()
                 .name((String) kakaoProfile.get("nickname"))
                 .email((String) kakaoAccount.get("email"))
@@ -60,6 +73,7 @@ class OAuth2Attribute {
     private static OAuth2Attribute ofNaver(String attributeKey,
                                            Map<String, Object> attributes) {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
 
         return OAuth2Attribute.builder()
                 .name((String) response.get("name"))
