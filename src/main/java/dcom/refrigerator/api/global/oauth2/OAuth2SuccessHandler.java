@@ -48,11 +48,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String email = (String) oAuth2User.getAttribute("email");
 
-
         Optional<User> userOptional = userRepository.findByEmail(email);
-
-
-        log.info("{}", userOptional);
 
 
         if( userOptional.isPresent()){
@@ -69,23 +65,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                             .build()
             );
         }
-
-        /*Token token = tokenService.generateToken(email, "USER");
-        Cookie accessTokenCookie= new Cookie("access",token.getToken());
-        accessTokenCookie.setMaxAge(60*10);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setDomain("localhost");
-        accessTokenCookie.setHttpOnly(true);
-
-        response.addCookie(accessTokenCookie);
-
-        Cookie refreshTokenCookie= new Cookie("refresh", token.getRefreshToken());
-        refreshTokenCookie.setMaxAge(2*7*24*60*60);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setDomain("localhost");
-        refreshTokenCookie.setHttpOnly(true);
-
-        response.addCookie(refreshTokenCookie);*/
 
         Token token = tokenService.generateToken(email, "USER");
 
@@ -109,33 +88,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
-
-
-
         getRedirectStrategy().sendRedirect(request, response,websiteURL);
-        /*writeTokenResponse(response, token,tokenCookie,refreshTokenCookie);*/
     }
-
-
-    private void writeTokenResponse(HttpServletResponse response, Token token,ResponseCookie cookie,ResponseCookie cookie2)
-            throws IOException {
-
-
-
-
-        response.setHeader("Set-Cookie", cookie.toString());
-        response.addHeader("Set-Cookie", cookie2.toString());
-        response.setContentType("application/json;charset=UTF-8");
-
-
-        log.info("cookie");
-        log.info("{}",response.getHeaders("Set-Cookie"));
-
-        var writer = response.getWriter();
-        writer.println(objectMapper.writeValueAsString(token));
-        writer.flush();
-    }
-
-
-
 }
