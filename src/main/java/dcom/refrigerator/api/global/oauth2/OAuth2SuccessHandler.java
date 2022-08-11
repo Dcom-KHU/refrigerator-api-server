@@ -8,6 +8,7 @@ import dcom.refrigerator.api.global.security.config.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -32,6 +33,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final TokenService tokenService;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+
+    @Value("${website.url}")
+    private String websiteURL;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -66,38 +70,66 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             );
         }
 
+        /*Token token = tokenService.generateToken(email, "USER");
+        Cookie accessTokenCookie= new Cookie("access",token.getToken());
+        accessTokenCookie.setMaxAge(60*10);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setDomain("localhost");
+        accessTokenCookie.setHttpOnly(true);
+
+        response.addCookie(accessTokenCookie);
+
+        Cookie refreshTokenCookie= new Cookie("refresh", token.getRefreshToken());
+        refreshTokenCookie.setMaxAge(2*7*24*60*60);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setDomain("localhost");
+        refreshTokenCookie.setHttpOnly(true);
+
+        response.addCookie(refreshTokenCookie);*/
+
         Token token = tokenService.generateToken(email, "USER");
-        /*ResponseCookie tokenCookie = ResponseCookie.from("accessToken", token.getToken())
-                .maxAge(60*10)
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
                 .path("/")
+                .secure(true)
+                .sameSite("None")
                 .httpOnly(true)
-                .sameSite("none")
+                .domain("localhost")
                 .build();
+
+        response.setHeader("Set-Cookie", accessTokenCookie.toString());
+
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
-                .maxAge(60*60*24*7*2)
                 .path("/")
+                .secure(true)
+                .sameSite("None")
                 .httpOnly(true)
-                .sameSite("none")
+                .domain("localhost")
                 .build();
 
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
 
-        response.addHeader("Set-Cookie",tokenCookie.toString());
-        response.addHeader("Set-Cookie",refreshTokenCookie.toString());
 
-    */
-        //getRedirectStrategy().sendRedirect(request, response,'' );
-        writeTokenResponse(response, token);
+
+        getRedirectStrategy().sendRedirect(request, response,websiteURL);
+        /*writeTokenResponse(response, token,tokenCookie,refreshTokenCookie);*/
     }
 
 
-    private void writeTokenResponse(HttpServletResponse response, Token token)
+    private void writeTokenResponse(HttpServletResponse response, Token token,ResponseCookie cookie,ResponseCookie cookie2)
             throws IOException {
-        response.setContentType("text/html;charset=UTF-8");
 
-        response.addHeader("Auth", token.getToken());
-        response.addHeader("Refresh", token.getRefreshToken());
+
+
+
+        response.setHeader("Set-Cookie", cookie.toString());
+        response.addHeader("Set-Cookie", cookie2.toString());
         response.setContentType("application/json;charset=UTF-8");
+
+
+        log.info("cookie");
+        log.info("{}",response.getHeaders("Set-Cookie"));
 
         var writer = response.getWriter();
         writer.println(objectMapper.writeValueAsString(token));
