@@ -50,22 +50,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Optional<User> userOptional = userRepository.findByEmail(email);
 
-
-        if( userOptional.isPresent()){
-            User user=userOptional.get();
-        }
-        else {
-            User user = userRepository.save(
-                    User.builder()
-                            .nickname((String) oAuth2User.getAttribute("nickname"))
-                            .email(email)
-                            .name((String) oAuth2User.getAttribute("name"))
-                            .notificationRefrigerator(false)
-                            .notificationFood(false)
-                            .build()
-            );
-        }
-
         Token token = tokenService.generateToken(email, "USER");
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
@@ -88,6 +72,26 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
-        getRedirectStrategy().sendRedirect(request, response,websiteURL);
+
+        if( userOptional.isPresent()){
+            User user=userOptional.get();
+
+            getRedirectStrategy().sendRedirect(request, response,websiteURL);
+        }
+        else {
+            User user = userRepository.save(
+                    User.builder()
+                            .nickname((String) oAuth2User.getAttribute("nickname"))
+                            .email(email)
+                            .name((String) oAuth2User.getAttribute("name"))
+                            .notificationRefrigerator(false)
+                            .notificationFood(false)
+                            .build()
+            );
+            getRedirectStrategy().sendRedirect(request, response,websiteURL+"/user/register");
+
+        }
+
+
     }
 }
