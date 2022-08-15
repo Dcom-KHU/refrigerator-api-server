@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(length = 128)
@@ -23,6 +23,9 @@ public class User {
     @Column(length = 128)
     private String email;
 
+    @Column(length = 128)
+    private String password;
+
     @Column
     private Integer point;
 
@@ -31,4 +34,6 @@ public class User {
 
     @Column(name = "notification_refrigerator")
     private Boolean notificationRefrigerator;
+
+
 }
