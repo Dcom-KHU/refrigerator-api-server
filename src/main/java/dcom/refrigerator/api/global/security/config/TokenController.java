@@ -4,6 +4,7 @@ package dcom.refrigerator.api.global.security.config;
 import dcom.refrigerator.api.domain.user.dto.UserRequestDto;
 import dcom.refrigerator.api.domain.user.dto.UserResponseDto;
 import dcom.refrigerator.api.domain.user.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 
+@Api(tags = {"token Controller"})
 @Slf4j
 @RequiredArgsConstructor
 @ResponseBody

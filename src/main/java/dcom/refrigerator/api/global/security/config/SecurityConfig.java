@@ -27,8 +27,7 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/token/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
 
                 .and()
                 .oauth2Login().loginPage("/token/expired")
