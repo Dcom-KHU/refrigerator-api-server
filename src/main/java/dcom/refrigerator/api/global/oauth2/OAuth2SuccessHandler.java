@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.Column;
@@ -34,9 +35,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
+
     @Value("${website.url}")
     private String websiteURL;
-
+    @CrossOrigin(origins ="http://3.138.230.191:8080")
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
@@ -73,8 +75,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         if( userOptional.isPresent()){
             User user=userOptional.get();
-
-            getRedirectStrategy().sendRedirect(request, response,websiteURL);
         }
         else {
             User user = userRepository.save(
@@ -86,10 +86,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                             .notificationFood(false)
                             .build()
             );
-            getRedirectStrategy().sendRedirect(request, response,websiteURL+"/user/register");
-
         }
 
+        String result ="token is coming~" ;
+        response.getWriter().write(objectMapper.writeValueAsString(result));
 
     }
 }

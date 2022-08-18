@@ -86,7 +86,7 @@ public class TokenController {
 
         headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-        URI uri=new URI("redirect://user/test");
+        URI uri=new URI(websiteURL+"/user/test");
         headers.setLocation(uri);
 
         return ResponseEntity.ok()
