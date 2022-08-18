@@ -56,7 +56,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .path("/")
                 .secure(true)
                 .sameSite("None")
-                .httpOnly(true)
                 .domain("localhost")
                 .build();
 
@@ -66,7 +65,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .path("/")
                 .secure(true)
                 .sameSite("None")
-                .httpOnly(true)
                 .domain("localhost")
                 .build();
 

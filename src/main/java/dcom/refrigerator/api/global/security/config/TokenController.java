@@ -71,7 +71,6 @@ public class TokenController {
                 .path("/")
                 .secure(true)
                 .sameSite("None")
-                .httpOnly(true)
                 .domain("localhost")
                 .build();
 
@@ -82,7 +81,6 @@ public class TokenController {
                 .path("/")
                 .secure(true)
                 .sameSite("None")
-                .httpOnly(true)
                 .domain("localhost")
                 .build();
 
