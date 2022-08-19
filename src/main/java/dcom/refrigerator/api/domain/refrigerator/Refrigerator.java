@@ -14,12 +14,14 @@ import javax.persistence.*;
 public class Refrigerator {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "refrigerator_id")
     private Integer id;
 
     @ManyToOne
     private User user_id;
 
     @ManyToOne
+    @JoinColumn()
     private Ingredient ingredient_id;
 
     @Column(length = 128)

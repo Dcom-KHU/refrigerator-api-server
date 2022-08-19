@@ -11,7 +11,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Ingredient {
+
+
+
     @Id
+    @Column(name = "ingredient_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
