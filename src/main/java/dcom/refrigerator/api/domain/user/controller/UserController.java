@@ -79,7 +79,7 @@ public class UserController {
 
             headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-            URI uri=new URI(websiteURL+"/user/test");
+            URI uri=new URI(websiteURL+"/home");
             headers.setLocation(uri);
 
             return ResponseEntity.ok()
@@ -119,7 +119,7 @@ public class UserController {
 
         headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-        URI uri=new URI(websiteURL+"/user/test");
+        URI uri=new URI(websiteURL+"/home");
         headers.setLocation(uri);
 
         return ResponseEntity.status(HttpStatus.CREATED)

@@ -87,7 +87,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        getRedirectStrategy().sendRedirect(request, response, websiteURL + "/user/test");
+        getRedirectStrategy().sendRedirect(request, response, websiteURL);
 
 
     }
