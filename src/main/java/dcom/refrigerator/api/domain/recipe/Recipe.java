@@ -24,8 +24,8 @@ public class Recipe {
     private Food food_id;
 
     @Column
-    @OneToMany(mappedBy = "ingredient")
-    private Set<RecipeIngredient> users = new HashSet<>();
+    @OneToMany(mappedBy = "ingredient_id")
+    private Set<Ingredient> ingredients = new HashSet<>();
 
     @Column(length = 128)
     private String amount;
