@@ -26,11 +26,36 @@ public class UserService {
 
 
     public UserResponseDto.Simple findSimpleByEmail(String email){
-        Optional<User> user=userRepository.findByEmail(email);
 
         return UserResponseDto.Simple.of(userRepository.findByEmail(email).orElseThrow(
                 ()->new ResponseStatusException(HttpStatus.NOT_FOUND,"유저를 찾을 수 없습니다.")
         ));
     }
 
+
+    public UserResponseDto.Profile findProfileByEmail(String email){
+
+        return UserResponseDto.Profile.of(userRepository.findByEmail(email).orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND,"유저를 찾을 수 없습니다.")
+        ));
+    }
+
+
+
+    public void joinUser(UserRequestDto.Join data){
+        Optional<User> checkDuplicate=userRepository.findByEmail(data.getEmail());
+
+        if (checkDuplicate.isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"이미 존재하는 회원입니다");
+
+        else {
+            User user=data.toEntity();
+            userRepository.save(user);
+        }
+
+
+
+
+
+    }
 }
