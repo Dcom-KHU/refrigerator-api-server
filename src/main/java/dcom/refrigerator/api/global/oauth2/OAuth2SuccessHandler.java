@@ -35,7 +35,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
-
     @Value("${website.url}")
     private String websiteURL;
     @CrossOrigin(origins ="http://3.138.230.191:8080")
@@ -55,18 +54,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Token token = tokenService.generateToken(email, "USER");
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
+                .maxAge( 24 * 60 * 60)
                 .path("/")
-                .secure(true)
-                .sameSite("None")
                 .domain("localhost")
                 .build();
 
-        response.setHeader("Set-Cookie", accessTokenCookie.toString());
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+                .maxAge(7 * 24 * 60 * 60)
                 .path("/")
-                .secure(true)
-                .sameSite("None")
                 .domain("localhost")
                 .build();
 
@@ -88,8 +85,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             );
         }
 
-        String result ="token is coming~" ;
-        response.getWriter().write(objectMapper.writeValueAsString(result));
+        log.info("{}",response.getHeaders("Set-Cookie"));
+
+        response.setContentType("text/plain;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        getRedirectStrategy().sendRedirect(request, response, websiteURL + "/user/test");
+
 
     }
 }

@@ -68,6 +68,7 @@ public class TokenController {
         Token token=tokenService.generateToken(userService.findSimpleByEmail(login.getEmail()).getEmail(),"USER");
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
+                .maxAge( 24 * 60 * 60)
                 .path("/")
                 .secure(true)
                 .sameSite("None")
@@ -78,6 +79,7 @@ public class TokenController {
         headers.set("Set-Cookie", accessTokenCookie.toString());
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+                .maxAge( 7*24 * 60 * 60)
                 .path("/")
                 .secure(true)
                 .sameSite("None")
