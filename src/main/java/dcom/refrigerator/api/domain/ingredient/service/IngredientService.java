@@ -40,8 +40,9 @@ public class IngredientService {
         }
 
 
-        return ingredientRepository.save(ingredient).orElseThrow(()->new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "잘못된 요청입니다.")).getId();
+         Ingredient temp= ingredientRepository.save(ingredient);
+
+        return temp.getId();
     }
 
 

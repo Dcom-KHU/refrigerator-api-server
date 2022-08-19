@@ -2,6 +2,7 @@ package dcom.refrigerator.api.domain.ingredient.controller;
 
 
 import dcom.refrigerator.api.domain.ingredient.Ingredient;
+import dcom.refrigerator.api.domain.ingredient.dto.IngredientRequestDto;
 import dcom.refrigerator.api.domain.ingredient.service.IngredientService;
 import dcom.refrigerator.api.domain.user.dto.UserRequestDto;
 import dcom.refrigerator.api.global.security.config.Token;
@@ -30,9 +31,9 @@ public class IngredientController {
 
     @ApiOperation("재료 등록 합니다.")
     @PostMapping("/register")
-    public ResponseEntity<Void> registerIngredient(@RequestBody Ingredient ingredient) throws URISyntaxException {
+    public ResponseEntity<Void> registerIngredient(@RequestBody final IngredientRequestDto.IngredientRegister data) throws URISyntaxException {
 
-        ingredientService.joinIngredient(ingredient);
+        ingredientService.joinIngredient(data.toEntity());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
