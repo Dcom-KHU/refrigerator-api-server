@@ -37,7 +37,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Value("${website.url}")
     private String websiteURL;
-    @CrossOrigin(origins ="http://3.138.230.191:8080")
+    @CrossOrigin(origins ="http://20.38.46.151:8080")
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
@@ -87,7 +87,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        getRedirectStrategy().sendRedirect(request, response, websiteURL);
+        getRedirectStrategy().sendRedirect(request, response, websiteURL+"/home");
 
 
     }
