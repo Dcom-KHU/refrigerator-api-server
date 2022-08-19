@@ -72,7 +72,6 @@ public class TokenController {
                 .path("/")
                 .secure(true)
                 .sameSite("None")
-                .domain("localhost")
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
@@ -83,7 +82,6 @@ public class TokenController {
                 .path("/")
                 .secure(true)
                 .sameSite("None")
-                .domain("localhost")
                 .build();
 
         headers.add("Set-Cookie", refreshTokenCookie.toString());
