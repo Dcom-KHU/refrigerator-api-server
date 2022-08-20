@@ -4,8 +4,12 @@ import com.sun.istack.NotNull;
 import dcom.refrigerator.api.domain.food.Food;
 import dcom.refrigerator.api.domain.ingredient.Ingredient;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,7 +18,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Recipe {
     @Id
     @NotNull
@@ -23,7 +26,7 @@ public class Recipe {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private Food food_id;
+    private Food food;
 
     @Column
     @OneToMany
@@ -32,5 +35,10 @@ public class Recipe {
 
     @Column(length = 128)
     private String amount;
+
+
+
+
+
 }
 

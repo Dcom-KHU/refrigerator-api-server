@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = {"Recipe Controller"})
 @Slf4j
 @RestController
-@RequestMapping("/recipe")
+@RequestMapping("/food")
 @RequiredArgsConstructor
 public class FoodController {
 
