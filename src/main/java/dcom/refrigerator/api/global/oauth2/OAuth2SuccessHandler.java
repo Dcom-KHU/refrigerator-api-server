@@ -37,7 +37,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Value("${website.url}")
     private String websiteURL;
-    @CrossOrigin(origins ="http://20.38.46.151:8080")
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
