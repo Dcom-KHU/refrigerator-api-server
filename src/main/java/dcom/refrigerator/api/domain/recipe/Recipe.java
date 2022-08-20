@@ -1,5 +1,6 @@
 package dcom.refrigerator.api.domain.recipe;
 
+import com.sun.istack.NotNull;
 import dcom.refrigerator.api.domain.food.Food;
 import dcom.refrigerator.api.domain.ingredient.Ingredient;
 import lombok.*;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 public class Recipe {
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "recipe_id")
     private Integer id;
@@ -24,7 +26,8 @@ public class Recipe {
     private Food food_id;
 
     @Column
-    @OneToMany(mappedBy = "ingredient_id")
+    @OneToMany
+    @JoinColumn(name = "ingredient_id")
     private Set<Ingredient> ingredients = new HashSet<>();
 
     @Column(length = 128)
