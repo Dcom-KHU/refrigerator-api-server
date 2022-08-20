@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class IngredientService {
-    protected final IngredientRepository ingredientRepository;
+    private final IngredientRepository ingredientRepository;
 
     public Ingredient getIngredientById(Integer id){
         return ingredientRepository.findById(id).orElseThrow(() -> new ResponseStatusException(

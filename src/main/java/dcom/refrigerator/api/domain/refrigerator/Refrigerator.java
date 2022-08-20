@@ -18,12 +18,12 @@ public class Refrigerator {
     private Integer id;
 
     @ManyToOne
-    private User user_id;
+    private User userId;
 
     @ManyToOne
     @JoinColumn()
-    private Ingredient ingredient_id;
+    private Ingredient ingredientId;
 
     @Column(length = 128)
-    private String expired_date;
+    private String expiredDate;
 }
