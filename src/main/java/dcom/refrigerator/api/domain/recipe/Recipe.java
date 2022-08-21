@@ -19,18 +19,17 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Recipe {
+
+
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "recipe_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Food food;
 
-    @Column
-    @OneToMany
-    @JoinColumn(name = "ingredient_id")
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "recipe_id")
     private Set<Ingredient> ingredients = new HashSet<>();
 
     @Column(length = 128)
