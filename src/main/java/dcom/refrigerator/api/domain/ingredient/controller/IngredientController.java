@@ -17,6 +17,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -31,7 +32,7 @@ public class IngredientController {
 
     @ApiOperation("재료를 DB에 등록 합니다.")
     @PostMapping("/register")
-    public ResponseEntity<Void> registerIngredient(@RequestBody final IngredientRequestDto.IngredientRegister data) throws URISyntaxException {
+    public ResponseEntity<Void> registerIngredient(@RequestBody @Valid final IngredientRequestDto.IngredientRegister data) throws URISyntaxException {
 
         ingredientService.joinIngredient(data.toEntity());
 

@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spring.web.json.Json;
 
+import javax.validation.Valid;
 import java.net.URISyntaxException;
 
 @Api(tags = {"Recipe Controller"})
@@ -32,7 +33,7 @@ public class RecipeController {
 
     @ApiOperation(" 음식-레시피를 DB에 등록 합니다.")
     @PostMapping("/register")
-    public ResponseEntity<Void> registerRecipe(@RequestBody final RecipeRequestDto.RecipeRegister data) throws URISyntaxException {
+    public ResponseEntity<Void> registerRecipe(@RequestBody @Valid final RecipeRequestDto.RecipeRegister data) throws URISyntaxException {
 
         recipeService.joinRecipe(data);
 
