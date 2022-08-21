@@ -29,7 +29,7 @@ public class IngredientController {
 
     private final IngredientService ingredientService;
 
-    @ApiOperation("재료 등록 합니다.")
+    @ApiOperation("재료를 DB에 등록 합니다.")
     @PostMapping("/register")
     public ResponseEntity<Void> registerIngredient(@RequestBody final IngredientRequestDto.IngredientRegister data) throws URISyntaxException {
 
@@ -38,7 +38,7 @@ public class IngredientController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation("재료를 삭제 합니다.")
+    @ApiOperation("재료를 DB에서 삭제 합니다.")
     @DeleteMapping(value = "/delete/{ingredientId}")
     public ResponseEntity<Void> deleteGroup(@ApiParam(value="재료 ID", required = true) @PathVariable final Integer ingredientId) {
         ingredientService.deleteIngredient(ingredientId);

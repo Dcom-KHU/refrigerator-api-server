@@ -9,6 +9,7 @@ import dcom.refrigerator.api.domain.recipe.service.RecipeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -29,7 +30,7 @@ public class RecipeController {
     private final RecipeService recipeService;
 
 
-    @ApiOperation("레시 등록 합니다.")
+    @ApiOperation(" 음식-레시피를 DB에 등록 합니다.")
     @PostMapping("/register")
     public ResponseEntity<Void> registerRecipe(@RequestBody final RecipeRequestDto.RecipeRegister data) throws URISyntaxException {
 
@@ -37,5 +38,17 @@ public class RecipeController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @ApiOperation("레시피를 DB에서 삭제 합니다.")
+    @DeleteMapping(value = "/delete/{recipeId}")
+    public ResponseEntity<Void> deleteRecipe(@ApiParam(value="레시피 ID", required = true) @PathVariable final Integer recipeId) {
+        recipeService.deleteRecipe(recipeId);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+
+
+
 
 }

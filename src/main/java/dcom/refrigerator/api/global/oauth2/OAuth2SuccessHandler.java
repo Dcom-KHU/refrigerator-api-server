@@ -43,6 +43,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             throws IOException, ServletException {
 
 
+        log.info("hello");
 
 
         OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();

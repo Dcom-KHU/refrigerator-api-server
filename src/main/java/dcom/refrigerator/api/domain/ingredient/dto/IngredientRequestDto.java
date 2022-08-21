@@ -16,6 +16,8 @@ public class IngredientRequestDto {
     public static class IngredientRegister {
         @ApiModelProperty(value = "재료 이름", required = true)
         private String name;
+
+
         public Ingredient toEntity() {
             return Ingredient.builder()
                     .name(this.name)

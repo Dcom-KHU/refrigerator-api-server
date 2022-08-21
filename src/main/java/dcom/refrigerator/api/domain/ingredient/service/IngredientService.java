@@ -48,7 +48,7 @@ public class IngredientService {
 
     public void deleteIngredient(Integer id){
         Ingredient ingredient=ingredientRepository.findById(id).orElseThrow(()->new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "잘못된 id 입니다."));
+                HttpStatus.NOT_FOUND,"id에 해당되는 재료가 없습니다."));
         ingredientRepository.delete(ingredient);
     }
 
