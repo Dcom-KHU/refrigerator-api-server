@@ -34,19 +34,19 @@ public class UserService {
     }
 
 
-    private String getUserEmailInHeader() {
-        String userEmailString = request.getHeader("userEmail");
+    private Integer getUserIdInHeader() {
+        String userIdString = request.getHeader("userId");
 
-        if (userEmailString == null)
+        if (userIdString == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         try {
-            return userEmailString;
+            return Integer.parseInt(userIdString);
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "userID를 파싱할 수 없습니다.");
         }
     }
 
     public User getCurrentUser() {
-        return userRepository.findByEmail(getUserEmailInHeader()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"이메일를 찾을 수 없습니다."));
+        return userRepository.getById(getUserIdInHeader());
     }
 }

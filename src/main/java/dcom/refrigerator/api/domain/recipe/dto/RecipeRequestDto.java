@@ -53,10 +53,13 @@ public class RecipeRequestDto {
         private String ingredientAmount;
 
         @ApiModelProperty(value = "이미지 ", required = true)
-        private String images;
+        private List<MultipartFile> images;
+
 
         @ApiModelProperty(value = "이미지 설명 ", required = true)
         private String imageDescriptions;
+
+
 
 
     }

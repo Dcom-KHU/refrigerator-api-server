@@ -33,7 +33,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final TokenService tokenService;
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper;
 
     @Value("${website.url}")
     private String websiteURL;
