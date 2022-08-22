@@ -21,6 +21,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -40,28 +41,18 @@ public class UserController {
     private String websiteURL;
     private final TokenService tokenService;
     private final UserService userService;
+
+
     @ApiOperation("로그인을 합니다")
     @PostMapping("/login")
     public ResponseEntity<String> successLogin(@RequestBody UserRequestDto.Login login) throws URISyntaxException {
+        if (userService.verifyLoginUser(login.toLoginDto())){
 
-        UserResponseDto.Profile profile=userService.findProfileByEmail(login.getEmail());
-        log.info(profile.getEmail());
-        log.info(login.getEmail());
-
-        if (!profile.getEmail().equals(login.getEmail())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "잘못된 이메일입니다.");
-        } else if (!profile.getPassword().equals(login.getPassword())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "잘못된 비밀번호 입니다.");
-        } else {
-
-            Token token=tokenService.generateToken(profile.getEmail(),"USER");
-
+            Token token = tokenService.generateToken(login.getEmail(), "USER");
 
 
             ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
-                    .maxAge( 24 * 60 * 60)
+                    .maxAge(24 * 60 * 60)
                     .path("/")
                     .secure(true)
                     .sameSite("None")
@@ -71,7 +62,7 @@ public class UserController {
             headers.set("Set-Cookie", accessTokenCookie.toString());
 
             ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
-                    .maxAge( 7*24 * 60 * 60)
+                    .maxAge(7 * 24 * 60 * 60)
                     .path("/")
                     .secure(true)
                     .sameSite("None")
@@ -79,14 +70,16 @@ public class UserController {
 
             headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-            URI uri=new URI(websiteURL+"/home");
+            URI uri = new URI(websiteURL + "/home");
             headers.setLocation(uri);
 
             return ResponseEntity.ok()
                     .headers(headers)
-                    .body("로그인 성");}
+                    .body("로그인 성공 ");
+        }
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("로그인 실패");
     }
-
 
     @ApiOperation("회원가입을 합니다")
     @PostMapping("/join")
@@ -96,12 +89,11 @@ public class UserController {
         userService.joinUser(join);
 
 
-        Token token=tokenService.generateToken(join.getEmail(),"USER");
-
+        Token token = tokenService.generateToken(join.getEmail(), "USER");
 
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
-                .maxAge( 24 * 60 * 60)
+                .maxAge(24 * 60 * 60)
                 .path("/")
                 .secure(true)
                 .sameSite("None")
@@ -111,7 +103,7 @@ public class UserController {
         headers.set("Set-Cookie", accessTokenCookie.toString());
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
-                .maxAge( 7*24 * 60 * 60)
+                .maxAge(7 * 24 * 60 * 60)
                 .path("/")
                 .secure(true)
                 .sameSite("None")
@@ -119,7 +111,7 @@ public class UserController {
 
         headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-        URI uri=new URI(websiteURL+"/home");
+        URI uri = new URI(websiteURL + "/home");
         headers.setLocation(uri);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -127,6 +119,32 @@ public class UserController {
                 .body("회원가입 성공!");
     }
 
+
+    @ApiOperation("해당 id를  가진 유저의 정보를 삭제 합니다.")
+    @DeleteMapping(value = "/delete/{userId}")
+    public ResponseEntity<Void> deleteId(@ApiParam(value="유저 id", required = true) @PathVariable final Integer userId) {
+        userService.deleteUser(userId);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @ApiOperation("해당 email 을 가진 유저의 간단한 정보를 반환 합니다.")
+    @GetMapping(value = "/{userEmail}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<UserResponseDto.Simple> getUserByEmail (
+            @ApiParam(value = "유저 email", required = true) @PathVariable final String userEmail){
+
+        return ResponseEntity.ok(userService.getSimpleByEmail(userEmail));
+    }
+
+
+    @ApiOperation("현재 유저의 전체 정보를 반환 합니다.")
+    @GetMapping(value = "/my_profile/info")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<UserResponseDto.Profile> getMyProfile() {
+        log.info("controller");
+        return ResponseEntity.ok(userService.getMyProfile());
+    }
 }
 
 
