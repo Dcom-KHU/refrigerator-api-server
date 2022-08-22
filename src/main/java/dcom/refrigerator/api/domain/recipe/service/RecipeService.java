@@ -76,35 +76,30 @@ public class RecipeService {
 
 
             for (MultipartFile multipartFile : files) {
-                String originalFileExtension;
-                String contentType = multipartFile.getContentType();
-                String absolutePath="~/app/";
 
-                // 확장자명이 존재하지 않을 경우 처리 x
-                if(ObjectUtils.isEmpty(contentType)) {
-                    break;
-                }
-                else {  // 확장자가 jpeg, png인 파일들만 받아서 처리
-                    if(contentType.contains("image/jpeg"))
-                        originalFileExtension = ".jpg";
-                    else if(contentType.contains("image/png"))
-                        originalFileExtension = ".png";
-                    else  // 다른 확장자일 경우 처리 x
-                        break;
-                }
+
 
                 if(iter.hasNext()) {
-                    String path="images/" + multipartFile.getOriginalFilename() + "_" + UUID.randomUUID().toString()+originalFileExtension;
+                    String absolutePath="foodImages/";
+                    String path= UUID.randomUUID().toString()+ "_" + multipartFile.getOriginalFilename() ;
 
                     FoodImage foodImage=FoodImage.builder()
                             .food(foodRepository.findByName(data.getName()).get())
                             .originFileName(multipartFile.getOriginalFilename())
-                            .filePath(path)
+                            .filePath(absolutePath+path)
                             .description(iter.next()).build();
                     foodImageRepository.save(foodImage);
 
+                    File temp=new File(absolutePath);
+                    if (!temp.exists()){
+                        temp.mkdirs();
+
+                    }
+
                     try {
-                        multipartFile.transferTo(new File(absolutePath + path));
+
+                        multipartFile.transferTo(new File(absolutePath+path));
+
                     } catch (IOException e) {
                         System.out.println (e.toString());
                     }
@@ -128,7 +123,7 @@ public class RecipeService {
 
         for (String ingredient : data.getIngredient().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'","").split(",")) {
 
-            String ingredientName=ingredient.substring(0, ingredient.length());
+            String ingredientName=ingredient.substring(0, ingredient.length()).strip();
             Optional<Ingredient> ingredientOptional= ingredientRepository.findByName(ingredientName);
 
 

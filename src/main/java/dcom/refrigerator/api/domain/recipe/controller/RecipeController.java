@@ -35,9 +35,10 @@ public class RecipeController {
 
     @ApiOperation(" 음식-레시피를 DB에 등록 합니다. header에 userId 필요")
     @PostMapping("/register")
-    public ResponseEntity<Void> registerRecipe(@RequestPart RecipeRequestDto.RecipeRegister recipeRegister) throws URISyntaxException {
+    public ResponseEntity<Void> registerRecipe(@RequestPart(value = "recipeRegister") RecipeRequestDto.RecipeRegister recipeRegister,
+                                               @RequestPart(value="images") List<MultipartFile> images) throws URISyntaxException {
 
-        recipeService.joinRecipe(recipeRegister,recipeRegister.getImages());
+        recipeService.joinRecipe(recipeRegister,images);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
