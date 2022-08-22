@@ -53,7 +53,7 @@ public class UserController {
 
             ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
                     .maxAge(24 * 60 * 60)
-                    .path(websiteURL)
+                    .path("/")
                     .build();
 
             HttpHeaders headers = new HttpHeaders();
@@ -61,12 +61,12 @@ public class UserController {
 
             ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                     .maxAge(7 * 24 * 60 * 60)
-                    .path(websiteURL)
+                    .path("/")
                     .build();
 
             headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-            URI uri = new URI(websiteURL);
+            URI uri = new URI(websiteURL+":3000");
             headers.setLocation(uri);
 
             return ResponseEntity.ok()
@@ -103,7 +103,7 @@ public class UserController {
 
         headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-        URI uri = new URI(websiteURL);
+        URI uri = new URI(websiteURL+":3000");
         headers.setLocation(uri);
 
         return ResponseEntity.status(HttpStatus.CREATED)
