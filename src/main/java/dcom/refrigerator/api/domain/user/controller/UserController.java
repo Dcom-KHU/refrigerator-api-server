@@ -18,16 +18,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.security.web.RedirectStrategy;
 
 
 @Api(tags = {"user Controller"})
@@ -45,10 +48,15 @@ public class UserController {
 
     @ApiOperation("로그인을 합니다")
     @PostMapping("/login")
-    public ResponseEntity<String> successLogin(@RequestBody UserRequestDto.Login login) throws URISyntaxException {
-        if (userService.verifyLoginUser(login.toLoginDto())){
+    public ResponseEntity<String> successLogin(@RequestBody UserRequestDto.Login login, HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws URISyntaxException {
+        User user=login.toLoginDto();
+        if (userService.verifyLoginUser(user)){
 
-            Token token = tokenService.generateToken(login.getEmail(), "USER");
+            log.info("user");
+            log.info(user.getEmail());
+
+
+            Token token = tokenService.generateToken(user.getEmail(), "USER");
 
 
             ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
@@ -64,14 +72,19 @@ public class UserController {
                     .path("/")
                     .build();
 
+
+
+
             headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-            URI uri = new URI(websiteURL);
+            URI uri = new URI("/");
             headers.setLocation(uri);
 
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body("로그인 성공 ");
+            log.info(accessTokenCookie.toString());
+            log.info(refreshTokenCookie.toString());
+
+            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body("로그인 성공");
+
         }
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("로그인 실패");
@@ -98,12 +111,12 @@ public class UserController {
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                 .maxAge(7 * 24 * 60 * 60)
-                .path(websiteURL)
+                .path("/")
                 .build();
 
         headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-        URI uri = new URI(websiteURL);
+        URI uri = new URI("/");
         headers.setLocation(uri);
 
         return ResponseEntity.status(HttpStatus.CREATED)

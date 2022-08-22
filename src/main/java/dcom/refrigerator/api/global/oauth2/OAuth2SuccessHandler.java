@@ -54,14 +54,15 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
                 .maxAge( 24 * 60 * 60)
-                .path(websiteURL)
+                .path("/")
                 .build();
+
 
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                 .maxAge(7 * 24 * 60 * 60)
-                .path(websiteURL)
+                .path("/")
                 .build();
 
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
@@ -86,7 +87,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        getRedirectStrategy().sendRedirect(request, response, websiteURL);
+        getRedirectStrategy().sendRedirect(request, response, "http://20.38.46.151:3000");
 
 
     }
