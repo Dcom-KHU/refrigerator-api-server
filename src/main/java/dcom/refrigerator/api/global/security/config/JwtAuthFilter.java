@@ -2,6 +2,7 @@ package dcom.refrigerator.api.global.security.config;
 
 import dcom.refrigerator.api.domain.user.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,27 +10,37 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends GenericFilterBean {
     private final TokenService tokenService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = ((HttpServletRequest)request).getHeader("Auth");
+        Cookie[] cookies = ((HttpServletRequest) request).getCookies();
+        String token = null;
+
+        //
+        if (cookies != null) {
+            for (Cookie cookie: cookies) {
+                if (cookie.getName().equals("accessToken")) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
 
         if (token != null && tokenService.verifyToken(token)) {
-            String email = tokenService.getUid(token);
-            logger.info(email);
-
-            User user= User.builder().email(email)
-                    .name("test")
-                    .build();
-
-
+            log.info("-token-");
+            log.info(token);
+            User user = tokenService.getUserByToken(token);
+            log.info("-user-");
+            log.info("{}",user);
             Authentication auth = getAuthentication(user);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
