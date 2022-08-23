@@ -37,6 +37,9 @@ public class FoodImageService {
 
     }
 
+    public FoodImage getFoodImageByOriginFileName(String originFileName) {
+        return foodImageRepository.findFoodImageByOriginFileName(originFileName).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"image 를 찾을 수 없습니다."));
+    }
 
 
 

@@ -33,10 +33,23 @@ public class RecipeController {
     private final RecipeService recipeService;
 
 
+
+    @ApiOperation("레시피 등록, 헤더에 userId 담아야됨 ")
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Integer> recipeRegister(@Valid @ModelAttribute RecipeRequestDto.RecipeRegister recipeRegister) throws Exception {
         return ResponseEntity.ok(recipeService.joinRecipe(recipeRegister));
+
+
+    }
+
+
+    @GetMapping("/{userId}/recipeInfo")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List< RecipeResponseDto.RecipeInfo>>recipeInformation(@Valid @PathVariable Integer userId) throws Exception {
+        List< RecipeResponseDto.RecipeInfo> recipeInfos=recipeService.getRecipeByUserId(userId);
+
+        return ResponseEntity.ok(recipeInfos);
     }
 
 

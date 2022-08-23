@@ -13,5 +13,6 @@ import java.util.Optional;
 public interface FoodImageRepository extends JpaRepository<FoodImage, Integer> {
 
     List<FoodImage> findAllByFood(Food food);
+    Optional<FoodImage> findFoodImageByOriginFileName(String originFileName);
 
 }

@@ -12,8 +12,11 @@ import dcom.refrigerator.api.domain.ingredient.repository.IngredientRepository;
 import dcom.refrigerator.api.domain.ingredient.service.IngredientService;
 import dcom.refrigerator.api.domain.recipe.Recipe;
 import dcom.refrigerator.api.domain.recipe.dto.RecipeRequestDto;
+import dcom.refrigerator.api.domain.recipe.dto.RecipeResponseDto;
 import dcom.refrigerator.api.domain.recipe.repository.RecipeRepository;
 import dcom.refrigerator.api.domain.user.User;
+import dcom.refrigerator.api.domain.user.dto.UserResponseDto;
+import dcom.refrigerator.api.domain.user.repository.UserRepository;
 import dcom.refrigerator.api.domain.user.service.UserService;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -34,6 +37,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Transactional
 @Slf4j
@@ -46,6 +50,8 @@ public class RecipeService {
     private final UserService userService;
     private final IngredientRepository ingredientRepository;
     private final FoodImageRepository foodImageRepository;
+
+    private final UserRepository userRepository;
 
 
     public Integer joinRecipe(RecipeRequestDto.RecipeRegister data) throws Exception {
@@ -85,7 +91,7 @@ public class RecipeService {
 
                     String imagePath = null;
                     String absolutePath = new File("").getAbsolutePath() + "/";
-                    String path = "images/";
+                    String path = "images";
                     File file = new File(path);
                     if (!file.exists()) {
                         file.mkdirs();
@@ -112,7 +118,7 @@ public class RecipeService {
                         FoodImage foodImage = FoodImage.builder()
                                 .food(foodRepository.findByName(data.getName()).get())
                                 .originFileName(multipartFile.getOriginalFilename())
-                                .filePath(absolutePath + path)
+                                .filePath(absolutePath + imagePath)
                                 .description(iter.next().strip()).build();
                         foodImageRepository.save(foodImage);
 
@@ -138,17 +144,9 @@ public class RecipeService {
         for (String ingredient : data.getIngredient().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",")) {
 
             String ingredientName = ingredient.substring(0, ingredient.length()).strip();
-            Optional<Ingredient> ingredientOptional = ingredientRepository.findByName(ingredientName);
 
 
-            if (!ingredientOptional.isPresent()) {
-                Ingredient temp = new Ingredient();
-
-                temp.setName(ingredientName);
-                ingredients.add(temp);
-            } else {
-                ingredients.add(ingredientOptional.get());
-            }
+                ingredients.add(Ingredient.builder().name(ingredientName).build());
         }
 
 
@@ -156,6 +154,43 @@ public class RecipeService {
         // cascade persist 로 ingredient set 저장
         return recipeRepository.save(recipe).getId();
     }
+
+
+    public List<RecipeResponseDto.RecipeInfo> getRecipeByUserId(Integer userId){
+        User user= userRepository.getReferenceById(userId);
+
+
+        if (!user.getId().equals(userId))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"user 를 찾을 수 없습니다.");
+        else{
+            List<RecipeResponseDto.RecipeInfo> recipeInfoList= new ArrayList<>();
+
+            List<Recipe> test=recipeRepository.findAllRecipeByUserId(userId);
+            for (Recipe recipe : test ) {
+                log.info("test");
+                log.info("{}",recipe.getIngredients());
+            }
+
+
+            if(!recipeRepository.findAllRecipeByUserId(userId).isEmpty()) {
+                for (Recipe recipe : recipeRepository.findAllRecipeByUserId(userId)) {
+
+
+                    recipeInfoList.add(RecipeResponseDto.RecipeInfo.of(User.builder().id(userId).nickname(user.getNickname()).build(), recipe));
+
+                }
+
+            }
+            else throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 레시피 를 찾을 수 없습니다.");
+
+
+            return recipeInfoList;
+        }
+    }
+
+
+
+
 
 
 

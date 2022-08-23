@@ -23,11 +23,6 @@ public class IngredientService {
         ));
     }
 
-    public Ingredient getIngredientByName(String name){
-        return ingredientRepository.findByName(name).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "해당하는 ID를 가진 재료가 존재하지 않습니다."
-        ));
-    }
 
 
     public Integer joinIngredient(Ingredient ingredient){

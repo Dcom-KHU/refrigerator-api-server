@@ -56,8 +56,10 @@ public class RecipeRequestDto {
         @ApiModelProperty(value = "이미지 설명 ", required = true)
         private String imageDescriptions;
 
-
-
-
     }
+
+
+
+
+
 }
