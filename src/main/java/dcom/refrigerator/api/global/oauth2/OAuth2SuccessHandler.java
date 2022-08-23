@@ -36,7 +36,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Value("${website.url}")
     private String websiteURL;
-    @CrossOrigin(origins ="http://3.138.230.191:8080")
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
@@ -56,15 +55,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", token.getToken())
                 .maxAge( 24 * 60 * 60)
                 .path("/")
-                .domain("localhost")
                 .build();
+
 
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                 .maxAge(7 * 24 * 60 * 60)
                 .path("/")
-                .domain("localhost")
                 .build();
 
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
@@ -89,7 +87,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        getRedirectStrategy().sendRedirect(request, response, websiteURL + "/user/test");
+        getRedirectStrategy().sendRedirect(request, response, "http://20.38.46.151:3000");
 
 
     }
