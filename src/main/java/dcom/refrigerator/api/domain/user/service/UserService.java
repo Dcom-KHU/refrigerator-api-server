@@ -30,12 +30,7 @@ public class UserService {
     private final HttpServletRequest request;
 
 
-    public UserResponseDto.Simple findSimpleByEmail(String email){
 
-        return UserResponseDto.Simple.of(userRepository.findByEmail(email).orElseThrow(
-                ()->new ResponseStatusException(HttpStatus.NOT_FOUND,"유저를 찾을 수 없습니다.")
-        ));
-    }
 
     public UserResponseDto.Simple getSimpleByEmail(String email){
         return UserResponseDto.Simple.of(userRepository.findByEmail(email).orElseThrow(
@@ -44,12 +39,13 @@ public class UserService {
     }
 
 
-    public UserResponseDto.Profile findProfileByEmail(String email){
-
+    public UserResponseDto.Profile getProfileByEmail(String email){
         return UserResponseDto.Profile.of(userRepository.findByEmail(email).orElseThrow(
                 ()->new ResponseStatusException(HttpStatus.NOT_FOUND,"유저를 찾을 수 없습니다.")
         ));
     }
+
+
 
 
 

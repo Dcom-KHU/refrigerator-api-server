@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class UserRequestDto {
@@ -21,21 +22,25 @@ public class UserRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Join {
+        @NotNull
         @NotEmpty
         @Size(max = 128, message = "길이는 128자 이내여야 합니다.")
         @ApiModelProperty(value = "유저 닉네임", required = true)
         private String nickname;
 
+        @NotNull
         @NotEmpty
         @Size(max = 128, message = "길이는 128자 이내여야 합니다.")
         @ApiModelProperty(value = "유저 이름", required = true)
         private String name;
 
+        @NotNull
         @NotEmpty
         @Size(max = 128, message = "길이는 128자 이내여야 합니다.")
         @ApiModelProperty(value = "유저 비호밀번", required = true)
         private String password;
 
+        @NotNull
         @NotEmpty
         @Size(max = 128, message = "길이는 128자 이내여야 합니다.")
         @ApiModelProperty(value = "유저 이메일", required = true)
@@ -64,11 +69,13 @@ public class UserRequestDto {
     @AllArgsConstructor
     public static class Login {
 
+        @NotNull
         @NotEmpty
         @Size(max = 128, message = "길이는 128자 이내여야 합니다.")
         @ApiModelProperty(value = "유저 비호밀번", required = true)
         private String password;
 
+        @NotNull
         @NotEmpty
         @Size(max = 128, message = "길이는 128자 이내여야 합니다.")
         @ApiModelProperty(value = "유저 이메일", required = true)

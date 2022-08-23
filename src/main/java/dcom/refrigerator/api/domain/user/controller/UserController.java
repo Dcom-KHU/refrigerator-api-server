@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public class UserController {
 
     @ApiOperation("로그인을 합니다")
     @PostMapping("/login")
-    public ResponseEntity<String> successLogin(@RequestBody UserRequestDto.Login login, HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws URISyntaxException {
+    public ResponseEntity<UserResponseDto.Simple> successLogin(@Valid @RequestBody UserRequestDto.Login login, HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws URISyntaxException {
         User user=login.toLoginDto();
         if (userService.verifyLoginUser(user)){
 
@@ -83,16 +84,15 @@ public class UserController {
             log.info(accessTokenCookie.toString());
             log.info(refreshTokenCookie.toString());
 
-            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body("로그인 성공");
+            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(userService.getSimpleByEmail(user.getEmail()));
 
         }
-        else return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("로그인 실패");
+        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"로그인 실패");
     }
 
     @ApiOperation("회원가입을 합니다")
     @PostMapping("/join")
-    public ResponseEntity<String> successJoin(@RequestBody UserRequestDto.Join join) throws URISyntaxException {
+    public ResponseEntity<UserResponseDto.Profile> successJoin(@Valid @RequestBody UserRequestDto.Join join) throws URISyntaxException {
 
 
         userService.joinUser(join);
@@ -121,7 +121,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
-                .body("회원가입 성공!");
+                .body(userService.getProfileByEmail(join.getEmail()));
     }
 
 
@@ -150,6 +150,11 @@ public class UserController {
         log.info("controller");
         return ResponseEntity.ok(userService.getMyProfile());
     }
+
+
+
+
+
 }
 
 
