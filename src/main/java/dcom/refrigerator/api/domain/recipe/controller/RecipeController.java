@@ -33,23 +33,11 @@ public class RecipeController {
     private final RecipeService recipeService;
 
 
-    @ApiOperation(" 음식-레시피를 DB에 등록 합니다. header에 userId 필요")
     @PostMapping("/register")
-    public ResponseEntity<Void> registerRecipe(@RequestPart(value = "recipeRegister") RecipeRequestDto.RecipeRegister recipeRegister,
-                                               @RequestPart(value="images") List<MultipartFile> images) throws URISyntaxException {
-
-        recipeService.joinRecipe(recipeRegister,images);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Integer> recipeRegister(@Valid @ModelAttribute RecipeRequestDto.RecipeRegister recipeRegister) throws Exception {
+        return ResponseEntity.ok(recipeService.joinRecipe(recipeRegister));
     }
-
-    /*@ApiOperation("레시피를 DB에서 삭제 합니다. food도 같이 미국감")
-    @DeleteMapping(value = "/delete/{recipeId}")
-    public ResponseEntity<Void> deleteRecipe(@ApiParam(value="레시피 ID", required = true) @PathVariable final Integer recipeId) {
-        recipeService.deleteRecipe(recipeId);
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }*/
 
 
 

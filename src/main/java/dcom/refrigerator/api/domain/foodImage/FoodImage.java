@@ -1,11 +1,13 @@
 package dcom.refrigerator.api.domain.foodImage;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dcom.refrigerator.api.domain.food.Food;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -19,9 +21,9 @@ import javax.validation.constraints.NotNull;
 public class FoodImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_id")
     private Food food;
 

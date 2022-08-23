@@ -20,6 +20,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -47,8 +48,7 @@ public class RecipeService {
     private final FoodImageRepository foodImageRepository;
 
 
-    public Integer joinRecipe(RecipeRequestDto.RecipeRegister data,List<MultipartFile> files) {
-
+    public Integer joinRecipe(RecipeRequestDto.RecipeRegister data) throws Exception {
 
 
         Optional<Food> foodOptional = foodRepository.findByName(data.getName());
@@ -57,6 +57,7 @@ public class RecipeService {
         if (foodOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 이름입니다");
         }
+
 
         //add food
         foodService.joinFood(Food.builder()
@@ -67,64 +68,77 @@ public class RecipeService {
                 .build());
 
         //food image 처리
-        if(!files.isEmpty()) {
+        if (!data.getImages().isEmpty()) {
 
 
-            String[] imageDescriptions= data.getImageDescriptions()
-                    .replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'","").split(",");
-            Iterator<String> iter =Arrays.stream(imageDescriptions).iterator();
+            String[] imageDescriptions = data.getImageDescriptions()
+                    .replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",");
+            Iterator<String> iter = Arrays.stream(imageDescriptions).iterator();
 
 
-            for (MultipartFile multipartFile : files) {
+            for (MultipartFile multipartFile:data.getImages()) {
+
+                log.info(multipartFile.getContentType().toString());
+
+                if (iter.hasNext()) {
 
 
-
-                if(iter.hasNext()) {
-                    String absolutePath="foodImages/";
-                    String path= UUID.randomUUID().toString()+ "_" + multipartFile.getOriginalFilename() ;
-
-                    FoodImage foodImage=FoodImage.builder()
-                            .food(foodRepository.findByName(data.getName()).get())
-                            .originFileName(multipartFile.getOriginalFilename())
-                            .filePath(absolutePath+path)
-                            .description(iter.next()).build();
-                    foodImageRepository.save(foodImage);
-
-                    File temp=new File(absolutePath);
-                    if (!temp.exists()){
-                        temp.mkdirs();
-
+                    String imagePath = null;
+                    String absolutePath = new File("").getAbsolutePath() + "/";
+                    String path = "images/";
+                    File file = new File(path);
+                    if (!file.exists()) {
+                        file.mkdirs();
                     }
 
-                    try {
+                    if (!multipartFile.isEmpty()) {
+                        String contentType = multipartFile.getContentType();
+                        String originalFileExtension;
+                        if (ObjectUtils.isEmpty(contentType)) {
+                            throw new Exception("이미지 파일은 jpg, png 만 가능합니다.");
+                        } else {
+                            if (contentType.contains("image/jpeg")) {
+                                originalFileExtension = ".jpg";
+                            } else if (contentType.contains("image/png")) {
+                                originalFileExtension = ".png";
+                            } else {
+                                throw new Exception("이미지 파일은 jpg, png 만 가능합니다.");
+                            }
+                        }
+                        imagePath = path + "/" + UUID.randomUUID() + originalFileExtension;
+                        file = new File(absolutePath + imagePath);
+                        multipartFile.transferTo(file);
 
-                        multipartFile.transferTo(new File(absolutePath+path));
+                        FoodImage foodImage = FoodImage.builder()
+                                .food(foodRepository.findByName(data.getName()).get())
+                                .originFileName(multipartFile.getOriginalFilename())
+                                .filePath(absolutePath + path)
+                                .description(iter.next().strip()).build();
+                        foodImageRepository.save(foodImage);
 
-                    } catch (IOException e) {
-                        System.out.println (e.toString());
+
+                    } else {
+                        throw new Exception("이미지 파일이 비어있습니다.");
                     }
                 }
             }
         }
 
 
-
-
-
-
-        Recipe recipe= Recipe.builder()
+        //recipe 생성
+        Recipe recipe = Recipe.builder()
                 .food(foodRepository.findByName(data.getName()).get())
                 .amount(data.getIngredientAmount().
-                        replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'",""))
+                        replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", ""))
                 .build();
 
 
         Set<Ingredient> ingredients = new HashSet<>();
 
-        for (String ingredient : data.getIngredient().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'","").split(",")) {
+        for (String ingredient : data.getIngredient().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",")) {
 
-            String ingredientName=ingredient.substring(0, ingredient.length()).strip();
-            Optional<Ingredient> ingredientOptional= ingredientRepository.findByName(ingredientName);
+            String ingredientName = ingredient.substring(0, ingredient.length()).strip();
+            Optional<Ingredient> ingredientOptional = ingredientRepository.findByName(ingredientName);
 
 
             if (!ingredientOptional.isPresent()) {
@@ -132,8 +146,7 @@ public class RecipeService {
 
                 temp.setName(ingredientName);
                 ingredients.add(temp);
-            }
-            else{
+            } else {
                 ingredients.add(ingredientOptional.get());
             }
         }

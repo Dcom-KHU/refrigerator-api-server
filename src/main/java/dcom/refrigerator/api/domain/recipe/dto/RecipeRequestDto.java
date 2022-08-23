@@ -14,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class RecipeRequestDto {
 
@@ -52,7 +49,8 @@ public class RecipeRequestDto {
         @ApiModelProperty(value = "재료 개수 리스트(String type) ", required = true)
         private String ingredientAmount;
 
-
+        @ApiModelProperty(value = "이미 ", required = true)
+        private List<MultipartFile> images= new ArrayList<>();
 
 
         @ApiModelProperty(value = "이미지 설명 ", required = true)
