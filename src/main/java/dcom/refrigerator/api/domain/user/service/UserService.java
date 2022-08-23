@@ -25,6 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
+
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final HttpServletRequest request;
@@ -102,6 +103,7 @@ public class UserService {
         }
     }
 
+
     public User getCurrentUser() {
         return userRepository.getById(getUserIdInHeader());
     }
@@ -116,5 +118,6 @@ public class UserService {
                 )
         ));
     }
+
 
 }

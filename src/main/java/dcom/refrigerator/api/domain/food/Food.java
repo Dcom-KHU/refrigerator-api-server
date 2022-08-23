@@ -13,10 +13,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Food {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private User writer;
 
     @Column(length = 128)

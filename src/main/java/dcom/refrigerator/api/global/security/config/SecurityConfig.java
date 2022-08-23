@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .anyRequest().permitAll()// 임시 설정
                 //.antMatchers("/token/**").permitAll()
                 //.anyRequest().authenticated()
+
                 .and()
                 .addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login()
