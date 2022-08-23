@@ -44,6 +44,7 @@ public class RecipeController {
     }
 
 
+    @ApiOperation("레시피 info 확인하기")
     @GetMapping("/{userId}/recipeInfo")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List< RecipeResponseDto.RecipeInfo>>recipeInformation(@Valid @PathVariable Integer userId) throws Exception {

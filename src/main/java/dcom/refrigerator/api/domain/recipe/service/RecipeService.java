@@ -79,7 +79,14 @@ public class RecipeService {
 
             String[] imageDescriptions = data.getImageDescriptions()
                     .replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",");
-            Iterator<String> iter = Arrays.stream(imageDescriptions).iterator();
+
+            if (data.getImages().size()!=imageDescriptions.length)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"각 이미지에는 설명이 반드시 필요합니다.");
+
+
+
+
+                Iterator<String> iter = Arrays.stream(imageDescriptions).iterator();
 
 
             for (MultipartFile multipartFile:data.getImages()) {
@@ -124,7 +131,7 @@ public class RecipeService {
 
 
                     } else {
-                        throw new Exception("이미지 파일이 비어있습니다.");
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"이미지 파일이 비어있습니다. ");
                     }
                 }
             }
@@ -140,6 +147,7 @@ public class RecipeService {
 
 
         Set<Ingredient> ingredients = new HashSet<>();
+
 
         for (String ingredient : data.getIngredient().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",")) {
 
