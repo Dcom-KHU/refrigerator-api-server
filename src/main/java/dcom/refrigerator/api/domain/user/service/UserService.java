@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -115,6 +116,14 @@ public class UserService {
                         HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."
                 )
         ));
+    }
+
+
+
+    public UserResponseDto.Profile getMyProfileByJwt(String accessToken) {
+        log.info("service");
+
+        return UserResponseDto.Profile.of(tokenService.getUserByToken(accessToken));
     }
 
 }
