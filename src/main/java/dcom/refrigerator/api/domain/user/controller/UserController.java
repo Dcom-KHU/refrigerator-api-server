@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -153,6 +154,16 @@ public class UserController {
 
 
 
+
+
+    @ApiOperation("accessToken을 쿠키로 주면 유저의 전체 정보를 반환 합니다.GET")
+    @GetMapping(value = "/my_profile/jwt")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<UserResponseDto.Profile> getMyProfileByJwt(@CookieValue("accessToken") String accessToken) {
+        log.info("controller");
+        log.info(accessToken);
+        return ResponseEntity.ok(userService.getMyProfileByJwt(accessToken));
+    }
 
 
 }
