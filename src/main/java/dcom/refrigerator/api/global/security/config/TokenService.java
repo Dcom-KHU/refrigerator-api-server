@@ -43,6 +43,25 @@ public class TokenService {
         );
     }
 
+    public Token generateOnlyAccessToken(String uid, String role){
+        long tokenPeriod = 1000L * 60L * 10L;
+
+        Claims claims = Jwts.claims().setSubject(uid);
+        claims.put("role", role);
+
+        Date now = new Date();
+        return Token.builder()
+                .token(Jwts.builder()
+                        .setClaims(claims)
+                        .setIssuedAt(now)
+                        .setExpiration(new Date(now.getTime() + tokenPeriod))
+                        .signWith(SignatureAlgorithm.HS256, secretKey)
+                        .compact())
+                .build();
+
+
+    }
+
     public Token generateToken(String uid, String role) {
 
         long tokenPeriod = 1000L * 60L * 10L;

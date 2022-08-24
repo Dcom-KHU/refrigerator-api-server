@@ -46,19 +46,28 @@ public class TokenController {
         throw new RuntimeException();
     }
 
+    @ApiOperation("refreshToken 쿠키를 주면 accessToken 쿠키를 재발급합니다")
     @GetMapping("/refresh")
-    public String refreshAuth(HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("Refresh");
+    public ResponseEntity<String> refreshToken(@CookieValue("refreshToken") String refreshToken, HttpServletRequest request, HttpServletResponse response) {
+        String token = refreshToken;
         if (token != null && tokenService.verifyToken(token)) {
 
             String email = tokenService.getUid(token);
-            Token newToken = tokenService.generateToken(email, "USER");
+            Token newToken = tokenService.generateOnlyAccessToken(email, "USER");
 
-            response.addHeader("Auth", newToken.getToken());
-            response.addHeader("Refresh", newToken.getRefreshToken());
-            response.setContentType("application/json;charset=UTF-8");
+            ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", newToken.getToken())
+                    .maxAge(24 * 60 * 60)
+                    .path("/")
+                    .build();
 
-            return "HAPPY NEW TOKEN";
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Set-Cookie", accessTokenCookie.toString());
+
+
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .headers(headers)
+                    .body("무야호~");
         }
 
         throw new RuntimeException();
