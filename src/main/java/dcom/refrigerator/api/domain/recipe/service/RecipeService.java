@@ -86,8 +86,7 @@ public class RecipeService {
 
 
 
-                Iterator<String> iter = Arrays.stream(imageDescriptions).iterator();
-
+            Iterator<String> iter = Arrays.stream(imageDescriptions).iterator();
 
             for (MultipartFile multipartFile:data.getImages()) {
 
@@ -164,6 +163,8 @@ public class RecipeService {
     }
 
 
+    //user id로 recipe 엔티티 가져오기
+
     public List<RecipeResponseDto.RecipeInfo> getRecipeByUserId(Integer userId){
         User user= userRepository.getReferenceById(userId);
 
@@ -196,9 +197,16 @@ public class RecipeService {
         }
     }
 
-
-
-
+    //recipe 삭
+    public void deleteRecipe(Integer id){
+        Recipe recipe=recipeRepository.findById(id).orElseThrow(()->new ResponseStatusException(
+                HttpStatus.NOT_FOUND,"id에 해당되는 재료가 없습니다."));
+        Food food=recipe.getFood();
+        List<FoodImage> foodImages=foodImageRepository.findAllByFood(food);
+        foodImageRepository.deleteAll(foodImages);
+        foodRepository.delete(food);
+        recipeRepository.delete(recipe);
+    }
 
 
 

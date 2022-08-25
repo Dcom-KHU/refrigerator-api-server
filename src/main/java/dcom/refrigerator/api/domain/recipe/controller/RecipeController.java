@@ -37,7 +37,7 @@ public class RecipeController {
     @ApiOperation("레시피 등록, 헤더에 userId 담아야됨 ")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Integer> recipeRegister(@Valid @ModelAttribute RecipeRequestDto.RecipeRegister recipeRegister) throws Exception {
+    public ResponseEntity<Integer> registerRecipe(@Valid @ModelAttribute RecipeRequestDto.RecipeRegister recipeRegister) throws Exception {
         return ResponseEntity.ok(recipeService.joinRecipe(recipeRegister));
 
 
@@ -51,6 +51,14 @@ public class RecipeController {
         List< RecipeResponseDto.RecipeInfo> recipeInfos=recipeService.getRecipeByUserId(userId);
 
         return ResponseEntity.ok(recipeInfos);
+    }
+
+    @ApiOperation("레시피를 삭제 합니다.")
+    @DeleteMapping(value = "/delete/{recipeId}")
+    public ResponseEntity<Void> deleteRecipe(@ApiParam(value="recipe ID", required = true) @PathVariable final Integer recipeId) {
+        recipeService.deleteRecipe(recipeId);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
 

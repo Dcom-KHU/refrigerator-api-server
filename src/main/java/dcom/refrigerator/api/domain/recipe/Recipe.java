@@ -28,7 +28,7 @@ public class Recipe {
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Food food;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     private Set<Ingredient> ingredients = new HashSet<>();
 
