@@ -35,5 +35,7 @@ public class User {
     @Column(name = "notification_refrigerator")
     private Boolean notificationRefrigerator;
 
+    @Column
+    private String refreshToken;
 
 }

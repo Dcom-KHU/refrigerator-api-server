@@ -3,6 +3,7 @@ package dcom.refrigerator.api.global.oauth2;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.user.repository.UserRepository;
+import dcom.refrigerator.api.domain.user.service.UserService;
 import dcom.refrigerator.api.global.security.config.Token;
 import dcom.refrigerator.api.global.security.config.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final TokenService tokenService;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final UserService userService;
 
     @Value("${website.url}")
     private String websiteURL;
@@ -65,23 +67,21 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .path("/")
                 .build();
 
-        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+        response.addHeader("Set-Cookie", token.getRefreshToken());
+
+        User user= userOptional.orElseGet(() -> userRepository.save(
+                User.builder()
+                        .nickname((String) oAuth2User.getAttribute("nickname"))
+                        .email(email)
+                        .name((String) oAuth2User.getAttribute("name"))
+                        .notificationRefrigerator(false)
+                        .notificationFood(false)
+                        .refreshToken(refreshTokenCookie.toString())
+                        .build()
+        ));
 
 
-        if( userOptional.isPresent()){
-            User user=userOptional.get();
-        }
-        else {
-            User user = userRepository.save(
-                    User.builder()
-                            .nickname((String) oAuth2User.getAttribute("nickname"))
-                            .email(email)
-                            .name((String) oAuth2User.getAttribute("name"))
-                            .notificationRefrigerator(false)
-                            .notificationFood(false)
-                            .build()
-            );
-        }
+        userService.storeRefreshToken(user,token.getRefreshToken());
 
         log.info("{}",response.getHeaders("Set-Cookie"));
 

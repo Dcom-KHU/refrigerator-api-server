@@ -1,6 +1,7 @@
 package dcom.refrigerator.api.global.security.config;
 
 
+import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.user.dto.UserRequestDto;
 import dcom.refrigerator.api.domain.user.dto.UserResponseDto;
 import dcom.refrigerator.api.domain.user.service.UserService;
@@ -23,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.HttpRetryException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -46,11 +48,12 @@ public class TokenController {
         throw new RuntimeException();
     }
 
-    @ApiOperation("refreshToken 쿠키를 주면 accessToken 쿠키를 재발급합니다")
+    @ApiOperation("refreshToken 쿠키를 주면 accessToken 쿠키를 재발급합니다, 헤더에 userId 필요")
     @GetMapping("/refresh")
     public ResponseEntity<String> refreshToken(@CookieValue("refreshToken") String refreshToken, HttpServletRequest request, HttpServletResponse response) {
         String token = refreshToken;
-        if (token != null && tokenService.verifyToken(token)) {
+        User user=userService.getCurrentUser();
+        if (token != null && tokenService.verifyToken(token) && userService.checkRefreshTokenWithDB(user,refreshToken)) {
 
             String email = tokenService.getUid(token);
             Token newToken = tokenService.generateOnlyAccessToken(email, "USER");
@@ -70,7 +73,7 @@ public class TokenController {
                     .body("무야호~");
         }
 
-        throw new RuntimeException();
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"리프레쉬 쿠키 에러");
     }
 
 

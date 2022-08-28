@@ -2,6 +2,7 @@ package dcom.refrigerator.api.global.security.config;
 
 import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.user.repository.UserRepository;
+import dcom.refrigerator.api.domain.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -104,6 +105,8 @@ public class TokenService {
         log.info("{}",Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject());
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
+
+
 
 
 }
