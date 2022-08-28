@@ -22,22 +22,23 @@ public class IngredientService {
                 HttpStatus.NOT_FOUND, "해당하는 ID를 가진 재료가 존재하지 않습니다."
         ));
     }
+    public Ingredient getIngredientByName(String name){
+        return ingredientRepository.findByName(name).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "해당하는 Name 을 가진 재료가 존재하지 않습니다."
+        ));
+    }
 
 
 
-    public Integer joinIngredient(Ingredient ingredient){
+    public void joinIngredient(Ingredient ingredient){
 
         Optional<Ingredient> ingredientOptionalByName=ingredientRepository.findByName(ingredient.getName());
 
-        if ( ingredientOptionalByName.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "이미 존제하는 재료 name 입니다.");
+        if ( !ingredientOptionalByName.isPresent()) {
+
+            Ingredient temp= ingredientRepository.save(ingredient);
+
         }
-
-
-         Ingredient temp= ingredientRepository.save(ingredient);
-
-        return temp.getId();
     }
 
 

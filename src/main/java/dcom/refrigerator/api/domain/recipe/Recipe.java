@@ -25,18 +25,15 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Food food;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "recipe_id")
-    private Set<Ingredient> ingredients = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ingredient_id")
+    private Ingredient ingredient;
 
     @Column(length = 128)
     private String amount;
-
-
-
 
 
 }

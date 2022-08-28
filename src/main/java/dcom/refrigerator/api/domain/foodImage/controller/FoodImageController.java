@@ -18,6 +18,7 @@ import org.springframework.web.util.UriUtils;
 
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 
 @Api(tags = {"Food image Controller"})
@@ -31,12 +32,13 @@ public class FoodImageController {
 
 
 
-    @GetMapping("/info/{foodImageId}")
-    @ApiOperation("해당 아이디를 가진 이미지의 정보를 반환 합니다.")
+    @GetMapping("/info/foodImageId/{foodImageId}")
+    @ApiOperation("해당 음식 사진 아이디를 가진 이미지의 정보를 반환 합니다.")
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<FoodImageResponseDto.FoodImageData> getFoodImageById(@ApiParam(value="image ID", required = true) @PathVariable final Integer foodImageId) {
         return ResponseEntity.ok(FoodImageResponseDto.FoodImageData.of( foodImageService.getFoodImageById(foodImageId)));
     }
+    @ApiOperation("해당 음식 사진 아이디를 가진 이미지다운로드.")
     @GetMapping("/attach/{foodImageId}")
     public ResponseEntity<Resource> downloadAttach(@PathVariable Integer foodImageId) throws MalformedURLException {
         //...itemId 이용해서 고객이 업로드한 파일 이름인 uploadFileName랑 서버 내부에서 사용하는 파일 이름인 storeFileName을 얻는다는 내용은 생략
@@ -56,4 +58,12 @@ public class FoodImageController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);
     }
+
+    @GetMapping("/info/foodId/{foodId}")
+    @ApiOperation("해당 음식 아이디를 가진 이미지의 정보를 반환 합니다.")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity <List<FoodImageResponseDto.FoodImageData>> getAllFoodImageByFoodId(@ApiParam(value="food ID", required = true) @PathVariable final Integer foodId) {
+        return ResponseEntity.ok(FoodImageResponseDto.FoodImageData.of( foodImageService.getAllFoodImageByFoodId(foodId)));
+    }
+
 }

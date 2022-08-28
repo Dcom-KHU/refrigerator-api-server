@@ -70,7 +70,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .path("/")
                 .build();
 
-        response.addHeader("Set-Cookie", token.getRefreshToken());
+
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+
+     
 
         User user= userOptional.orElseGet(() -> userRepository.save(
                 User.builder()
@@ -85,6 +88,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         userService.storeRefreshToken(user,token.getRefreshToken());
+
 
         log.info("{}",response.getHeaders("Set-Cookie"));
 
