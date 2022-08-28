@@ -28,15 +28,12 @@ public class Recipe {
     @ManyToOne(fetch = FetchType.LAZY)
     private Food food;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "recipe_id")
-    private Set<Ingredient> ingredients=new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ingredient_id")
+    private Ingredient ingredient;
 
     @Column(length = 128)
     private String amount;
-
-
-
 
 
 }
