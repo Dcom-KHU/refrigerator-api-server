@@ -79,12 +79,11 @@ public class UserController {
 
             headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-            URI uri = new URI("/");
-            headers.setLocation(uri);
 
             log.info(accessTokenCookie.toString());
             log.info(refreshTokenCookie.toString());
 
+            userService.storeRefreshToken(user,token.getRefreshToken());
             return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(userService.getSimpleByEmail(user.getEmail()));
 
         }
@@ -117,9 +116,8 @@ public class UserController {
 
         headers.add("Set-Cookie", refreshTokenCookie.toString());
 
-        URI uri = new URI("/");
-        headers.setLocation(uri);
-
+        User user=userService.getUserByEmail(join.getEmail());
+        userService.storeRefreshToken(user,token.getRefreshToken());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
                 .body(userService.getProfileByEmail(join.getEmail()));
@@ -163,6 +161,32 @@ public class UserController {
         log.info("controller");
         log.info(accessToken);
         return ResponseEntity.ok(userService.getMyProfileByJwt(accessToken));
+    }
+
+
+    @ApiOperation("logout api, accessTokenCookie 랑  refreshTokenCookie 를  null 로 만듭니다. 헤더에 userId 필요")
+    @GetMapping(value = "/logout")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<String> logout() throws URISyntaxException {
+        User user=userService.getCurrentUser();
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", null)
+                .maxAge(24 * 60 * 60)
+                .path("/")
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Set-Cookie", accessTokenCookie.toString());
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", null)
+                .maxAge(7 * 24 * 60 * 60)
+                .path("/")
+                .build();
+
+        headers.add("Set-Cookie", refreshTokenCookie.toString());
+
+        userService.storeRefreshToken(user,null);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body("logout");
     }
 
 
