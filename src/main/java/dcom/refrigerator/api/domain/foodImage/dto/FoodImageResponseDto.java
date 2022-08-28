@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FoodImageResponseDto {
 
@@ -38,6 +40,10 @@ public class FoodImageResponseDto {
                     .filePath(foodImage.getFilePath())
                     .description(foodImage.getDescription())
                     .build();
+        }
+
+        public static List<FoodImageResponseDto.FoodImageData> of(List<FoodImage> foodImages) {
+            return foodImages.stream().map(FoodImageResponseDto.FoodImageData::of).collect(Collectors.toList());
         }
     }
 }

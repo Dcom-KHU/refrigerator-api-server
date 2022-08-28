@@ -21,5 +21,9 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
     @Query("select rc from Recipe as rc inner join rc.food as fd on fd.writer.id= :id")
     List<Recipe> findAllFoodRecipesByUserId(Integer id);
 
+    @Query("select rc from Recipe as rc inner join rc.food as fd on fd.name= :name")
+    List<Recipe> findAllFoodRecipesByFoodName(String name);
 
+    List<Food> findAllByWriterId(Integer id);
 }
+

@@ -41,7 +41,7 @@ public class IngredientController {
 
     @ApiOperation("재료를 DB에서 삭제 합니다.")
     @DeleteMapping(value = "/delete/{ingredientId}")
-    public ResponseEntity<Void> deleteGroup(@ApiParam(value="재료 ID", required = true) @PathVariable final Integer ingredientId) {
+    public ResponseEntity<Void> deleteIngredient(@ApiParam(value="재료 ID", required = true) @PathVariable final Integer ingredientId) {
         ingredientService.deleteIngredient(ingredientId);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

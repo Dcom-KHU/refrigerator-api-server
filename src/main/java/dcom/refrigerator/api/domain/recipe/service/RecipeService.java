@@ -30,6 +30,23 @@ public class RecipeService {
     }
 
 
+    public void deleteRecipeById(Integer id){
+        recipeRepository.delete(
+                recipeRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "해당하는 ID를 가진 레시피가 존재하지 않습니다."
+        )));
+    }
 
+    public List<Recipe> getAllByFoodId(Integer foodId){
+        List<Recipe> recipes=recipeRepository.findAllByFoodId(foodId);
+        if(recipes.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 음식 id에 대한 recipe 가 존재하지 않습니다.");
+
+        return recipeRepository.findAllByFoodId(foodId);
+    }
+
+    public void deleteAllRecipe(List<Recipe> recipes){
+        recipeRepository.deleteAll(recipes);
+    }
 
 }

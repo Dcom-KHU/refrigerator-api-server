@@ -4,6 +4,7 @@ import dcom.refrigerator.api.domain.food.Food;
 import dcom.refrigerator.api.domain.foodImage.FoodImage;
 import dcom.refrigerator.api.domain.recipe.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

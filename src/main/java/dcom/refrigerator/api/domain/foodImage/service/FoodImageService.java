@@ -32,11 +32,26 @@ public class FoodImageService {
     private  final FoodImageRepository foodImageRepository;
     private  final FoodRepository foodRepository;
 
-
     public FoodImage getFoodImageById(Integer foodImageId) {
         return foodImageRepository.findById(foodImageId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"image 를 찾을 수 없습니다."));
 
     }
+    public List<FoodImage> getAllFoodImageByFoodId(Integer foodId) {
+
+        Optional<Food> foodOptional= foodRepository.findById(foodId);
+        if(!foodOptional.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 foodId 에 대한 이미지가 없습니다");
+        else {
+        List<FoodImage> foodImages=foodImageRepository.findAllByFood(foodOptional.get());
+
+        if(foodImages.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 recipe id 에 대한 image 를 찾을 수 없습니다.");
+
+        else return  foodImages;
+        }
+    }
+
+
 
     public FoodImage getFoodImageByOriginFileName(String originFileName) {
         return foodImageRepository.findFoodImageByOriginFileName(originFileName).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"image 를 찾을 수 없습니다."));
@@ -92,7 +107,7 @@ public class FoodImageService {
                         multipartFile.transferTo(file);
 
                         FoodImage foodImage = FoodImage.builder()
-                                .food(foodRepository.findByDescription(food.getDescription()).get())
+                                .food(foodRepository.findByName(food.getName()).get())
                                 .originFileName(multipartFile.getOriginalFilename())
                                 .filePath(absolutePath + imagePath)
                                 .description(iter.next().strip()).build();
@@ -106,7 +121,13 @@ public class FoodImageService {
             }
         }
     }
-
+    public void deleteAllFoodImagesByFoodId(Integer foodId) {
+        Optional<Food> foodOptional=foodRepository.findById(foodId);
+        if(foodOptional.isPresent()){
+            List<FoodImage> foodImages= foodImageRepository.findAllByFood(foodOptional.get());
+            foodImageRepository.deleteAll(foodImages);
+        }
+    }
 
 
 

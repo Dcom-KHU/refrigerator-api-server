@@ -35,9 +35,10 @@ public class FoodResponseDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class FoodRecipesByUserInfo {
+    public static class FoodRecipes {
 
         private Integer id;
+
 
         private FoodResponseDto.Writer writer;
 
@@ -50,16 +51,22 @@ public class FoodResponseDto {
         private List<Ingredient> food;
 
 
-        public static FoodResponseDto.FoodRecipesByUserInfo of(User user, Recipe recipe){
-            FoodResponseDto.Writer writer= FoodResponseDto.Writer.builder().id(user.getId()).nickname(user.getNickname()).build();
+        public static FoodRecipes of(User user,List<Recipe> recipes,Food food ){
 
-            return FoodResponseDto.FoodRecipesByUserInfo.builder()
-                    .id(recipe.getId())
+            List<Ingredient> ingredients= new ArrayList<>();
+            Writer writer= Writer.builder().id(user.getId()).nickname(user.getNickname()).build();
+            for(Recipe recipe:recipes){
+                List<FoodRecipes> foodRecipesList =new ArrayList<>();
+                Food temp=recipe.getFood();
+                ingredients.add(recipe.getIngredient());
+            }
+            return FoodRecipes.builder()
+                    .id(food.getId())
                     .writer(writer)
-                    .name(recipe.getFood().getName())
-                    .description(recipe.getFood().getDescription())
-                    .category(recipe.getFood().getCategory().toString())
-                    .food(new ArrayList<>( recipe.getIngredients()))
+                    .name(food.getName())
+                    .description(food.getDescription())
+                    .category(food.getCategory().toString())
+                    .food(ingredients)
                     .build();
         }
 
