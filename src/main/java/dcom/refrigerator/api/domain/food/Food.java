@@ -16,7 +16,6 @@ public class Food {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     private User writer;
 

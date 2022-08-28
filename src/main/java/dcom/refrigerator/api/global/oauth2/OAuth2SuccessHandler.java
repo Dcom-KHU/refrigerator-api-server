@@ -67,7 +67,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
-
         if( userOptional.isPresent()){
             User user=userOptional.get();
         }
