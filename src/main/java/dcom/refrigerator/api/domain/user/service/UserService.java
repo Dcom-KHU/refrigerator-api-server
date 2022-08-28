@@ -26,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
+
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final HttpServletRequest request;
@@ -99,6 +100,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "userID를 파싱할 수 없습니다.");
         }
     }
+
 
     public User getCurrentUser() {
         return userRepository.getById(getUserIdInHeader());

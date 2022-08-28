@@ -34,8 +34,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final TokenService tokenService;
     private final UserRepository userRepository;
+
     private final ObjectMapper objectMapper;
     private final UserService userService;
+
 
     @Value("${website.url}")
     private String websiteURL;
@@ -44,6 +46,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             throws IOException, ServletException {
 
 
+        log.info("hello");
 
 
         OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
