@@ -2,6 +2,7 @@ package dcom.refrigerator.api.global.security.config;
 
 import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.user.repository.UserRepository;
+import dcom.refrigerator.api.domain.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -41,6 +42,25 @@ public class TokenService {
         return userRepository.findByEmail(getUid(accessToken)).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
         );
+    }
+
+    public Token generateOnlyAccessToken(String uid, String role){
+        long tokenPeriod = 1000L * 60L * 10L;
+
+        Claims claims = Jwts.claims().setSubject(uid);
+        claims.put("role", role);
+
+        Date now = new Date();
+        return Token.builder()
+                .token(Jwts.builder()
+                        .setClaims(claims)
+                        .setIssuedAt(now)
+                        .setExpiration(new Date(now.getTime() + tokenPeriod))
+                        .signWith(SignatureAlgorithm.HS256, secretKey)
+                        .compact())
+                .build();
+
+
     }
 
     public Token generateToken(String uid, String role) {
@@ -85,6 +105,8 @@ public class TokenService {
         log.info("{}",Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject());
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
+
+
 
 
 }

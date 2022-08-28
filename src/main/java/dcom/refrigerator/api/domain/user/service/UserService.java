@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -45,9 +46,6 @@ public class UserService {
                 ()->new ResponseStatusException(HttpStatus.NOT_FOUND,"유저를 찾을 수 없습니다.")
         ));
     }
-
-
-
 
 
     public void joinUser(UserRequestDto.Join data){
@@ -119,5 +117,36 @@ public class UserService {
         ));
     }
 
+
+
+    public UserResponseDto.Profile getMyProfileByJwt(String accessToken) {
+        log.info("service");
+
+        return UserResponseDto.Profile.of(tokenService.getUserByToken(accessToken));
+    }
+
+    public void storeRefreshToken(User user, String refreshToken){
+        User user1= userRepository.findByEmail(user.getEmail()).orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 user 가 없습니다."));
+        user1.setRefreshToken(refreshToken);
+        userRepository.save(user1);
+
+    }
+
+    public User getUserByEmail(String email){
+        Optional<User> user= userRepository.findByEmail(email);
+        if (!user.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 이메일을 가진 유저가 없습니다.");
+
+        else return user.get();
+    }
+
+
+    public Boolean checkRefreshTokenWithDB(User user,String refreshToken){
+        if(user.getRefreshToken().equals(refreshToken))
+            return true;
+        else
+            return false;
+    }
 
 }
