@@ -11,6 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
+
+import static java.util.List.*;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,20 +27,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.httpBasic().disable()
+                .cors().configurationSource(request -> {
+                    var cors = new CorsConfiguration();
+                    cors.setAllowedOrigins(of("http://20.38.46.151:3000","http://localhost:3000","http://localhost:8080"));
+                    cors.setAllowedMethods(of("GET","POST", "PUT", "DELETE", "OPTIONS"));
+                    cors.setAllowedHeaders(of("*"));
+                    cors.setAllowCredentials(true);
+                    return cors;
+                })
+                .and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
                 .and()
                 .authorizeRequests()
-                .antMatchers("/token/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()// 임시 설정
+                //.antMatchers("/token/**").permitAll()
+                //.anyRequest().authenticated()
 
                 .and()
-                .oauth2Login().loginPage("/token/expired")
+                .addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login()
+                .loginPage("/token/expired")
                 .successHandler(successHandler)
                 .userInfoEndpoint().userService(oAuth2UserService);
-
-        http.addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
