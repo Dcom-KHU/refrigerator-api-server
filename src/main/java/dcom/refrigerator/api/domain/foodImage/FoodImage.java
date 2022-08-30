@@ -33,7 +33,6 @@ public class FoodImage {
     @Column(nullable = false)
     private String filePath;  // 파일 저장 경로
 
+    @Column
     private String description;
-
-
 }

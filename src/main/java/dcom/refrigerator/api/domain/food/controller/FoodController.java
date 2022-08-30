@@ -25,31 +25,18 @@ public class FoodController {
 
     private final FoodService foodService;
 
-    @ApiOperation("음식  등록, 헤더에 userId 담아야됨 ")
+    @ApiOperation("음식 등록, 헤더에 userId 담아야됨 ")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Integer> registerFood(@Valid @ModelAttribute FoodRequestDto.FoodRegister foodRegister) throws Exception {
         return ResponseEntity.ok(foodService.joinFood(foodRegister));
     }
 
-    @ApiOperation("음식을  user Id로 검색, 헤더에 userId 담아야됨 ")
+    @ApiOperation("음식을 user Id로 검색, 헤더에 userId 담아야됨 ")
     @GetMapping("/info/userId")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity< List<FoodResponseDto.FoodRecipes> >FoodRecipesInfoByUserId(){
-
-
+    public ResponseEntity<List<FoodResponseDto.Simple>>FoodRecipesInfoByUserId(){
         return ResponseEntity.ok(foodService.getFoodsByUserId());
-
-    }
-
-
-    @ApiOperation("음식을  음식 이름으로 검색, query 로 넘겨야")
-    @GetMapping("/info/foodName")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity< List<FoodResponseDto.FoodRecipes> >FoodRecipesInfoByFoodName(@ApiParam(value="음식이름", required = true) @RequestParam final String foodName){
-
-
-        return ResponseEntity.ok(foodService.getFoodRecipesByFoodName(foodName.strip()));
     }
 
     @ApiOperation("음식을 삭제 합니다.")
@@ -60,11 +47,10 @@ public class FoodController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-
-
-
-
-
-
-
+    @ApiOperation("음식을 user Id로 검색, 헤더에 userId 담아야됨 ")
+    @GetMapping("/{foodId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<FoodResponseDto.Info> findById(@PathVariable Integer foodId) {
+        return ResponseEntity.ok(foodService.findFoodById(foodId));
+    }
 }

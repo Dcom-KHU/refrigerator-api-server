@@ -20,12 +20,12 @@ import java.util.Set;
 @AllArgsConstructor
 public class Recipe {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "food_id")
     private Food food;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,7 +34,5 @@ public class Recipe {
 
     @Column(length = 128)
     private String amount;
-
-
 }
 

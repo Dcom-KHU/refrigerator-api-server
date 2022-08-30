@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FoodRequestDto {
-
-
     @ApiModel(value="food 등록")
     @Builder
     @Getter
@@ -20,7 +18,6 @@ public class FoodRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class FoodRegister {
-
 
         @NotEmpty
         @Size( max = 128, message = "길이는 128자 이내여야 합니다.")
@@ -32,32 +29,21 @@ public class FoodRequestDto {
         private String description;
 
         @NotEmpty
-        @ApiModelProperty(value = "음식 카테고리 ", required = true)
+        @ApiModelProperty(value = "음식 카테고리", required = true)
         private String category;
 
         @NotEmpty
-        @ApiModelProperty(value = "재료 이름 리스트(String type)", required = true)
+        @ApiModelProperty(value = "재료 이름 리스트(String type), String Array를 stringify해서 보내 주세요. (ex: JSON.stringify)", required = true)
         private String ingredient;
 
         @NotEmpty
-        @Size( max = 128, message = "길이는 128자 이내여야 합니다.")
-        @ApiModelProperty(value = "재료 개수 리스트(String type) ", required = true)
+        @ApiModelProperty(value = "재료 개수 리스트(String type), String Array를 stringify해서 보내 주세요. (ex: JSON.stringify)", required = true)
         private String ingredientAmount;
 
-        @ApiModelProperty(value = "이미지 파일들  ", required = true)
+        @ApiModelProperty(value = "이미지 파일들, String Array를 stringify해서 보내 주세요. (ex: JSON.stringify)", required = true)
         private List<MultipartFile> images= new ArrayList<>();
 
-
-        @ApiModelProperty(value = "이미지 설명 ", required = true)
+        @ApiModelProperty(value = "이미지 설명들, String Array를 stringify해서 보내 주세요. (ex: JSON.stringify)", required = true)
         private String imageDescriptions;
-
-
-
-
     }
-
-
-
-
-
 }

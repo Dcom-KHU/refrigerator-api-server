@@ -4,6 +4,7 @@ import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.ingredient.Ingredient;
 import lombok.*;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -17,12 +18,13 @@ public class Refrigerator {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User userId;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
     @Column(length = 128)
-    private String expiredDate;
+    private LocalDateTime expiredDate;
 }

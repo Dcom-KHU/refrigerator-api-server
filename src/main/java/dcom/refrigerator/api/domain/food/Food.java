@@ -1,9 +1,12 @@
 package dcom.refrigerator.api.domain.food;
 
+import dcom.refrigerator.api.domain.foodImage.FoodImage;
+import dcom.refrigerator.api.domain.recipe.Recipe;
 import dcom.refrigerator.api.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -26,5 +29,14 @@ public class Food {
     private String description;
 
     @Column
+    private String mainImage;
+
+    @Column
     private FoodCategory category;
+
+    @OneToMany(mappedBy = "food", cascade = {CascadeType.ALL})
+    private Set<Recipe> recipes;
+
+    @OneToMany(mappedBy = "food", cascade = {CascadeType.ALL})
+    private Set<FoodImage> images;
 }

@@ -11,13 +11,11 @@ import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class FoodImageResponseDto {
-
-
-
 
     @ApiModel(value = "사진 정보")
     @Builder
@@ -26,12 +24,10 @@ public class FoodImageResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class FoodImageData {
-
         private Integer id;
         private String originFileName;  // 파일 원본명
         private String filePath;  // 파일 저장 경로
         private String description;
-
 
         public static FoodImageResponseDto.FoodImageData of(FoodImage foodImage) {
             return FoodImageData.builder()
@@ -42,7 +38,7 @@ public class FoodImageResponseDto {
                     .build();
         }
 
-        public static List<FoodImageResponseDto.FoodImageData> of(List<FoodImage> foodImages) {
+        public static List<FoodImageResponseDto.FoodImageData> of(Collection<FoodImage> foodImages) {
             return foodImages.stream().map(FoodImageResponseDto.FoodImageData::of).collect(Collectors.toList());
         }
     }

@@ -18,13 +18,11 @@ public class UserResponseDto {
     @AllArgsConstructor
     public static class Simple {
         private Integer id;
-        private String name;
         private String nickname;
         private String email;
 
         public static Simple of(User user) {
             return Simple.builder()
-                    .name(user.getName())
                     .email(user.getEmail())
                     .nickname(user.getNickname())
                     .build();
@@ -41,25 +39,16 @@ public class UserResponseDto {
     @AllArgsConstructor
     public static class Profile {
         private Integer id;
-        private String name;
         private String nickname;
         private String email;
-        private String password;
         private Integer point;
-        private Boolean notificationFood;
-        private Boolean notificationRefrigerator;
-
 
         public static Profile of(User user) {
             return Profile.builder()
                     .id(user.getId())
-                    .name(user.getName())
                     .nickname(user.getNickname())
                     .email(user.getEmail())
-                    .password(user.getPassword())
                     .point(user.getPoint())
-                    .notificationFood(Boolean.getBoolean("notificationFood"))
-                    .notificationRefrigerator(Boolean.getBoolean("notificationRefrigerator"))
                     .build();
         }
     }

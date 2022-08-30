@@ -97,52 +97,24 @@ public class FoodService {
                 .getId();
     }
 
-    public List<FoodResponseDto.FoodRecipes> getFoodsByUserId(){
+    public List<FoodResponseDto.Simple> getFoodsByUserId(){
             User user= userService.getCurrentUser();
-            List<FoodResponseDto.FoodRecipes> foodRecipeByUserIds = new ArrayList<>();
-
             //user id로 음식 리스트 가져옴
-            List<Food> foods= foodRepository.findAllByWriterId(user.getId());
+            List<Food> foods = foodRepository.findAllByWriterId(user.getId());
 
             //음식이 없는경우
             if(foods.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 userId 의 음식을 찾을 수 없습니다.");
-            }
-            //food 별로 이름에 맞는 recipe 추가
-            for(Food food:foods){
-                List<Recipe> recipes=foodRepository.findAllFoodRecipesByFoodName(food.getName());
-                foodRecipeByUserIds.add(FoodResponseDto.FoodRecipes.of(user,recipes,food));
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND," 해당하는 userId 의 음식을 찾을 수 없습니다.");
             }
 
-
-
-            return foodRecipeByUserIds;
+            return FoodResponseDto.Simple.of(foods);
     }
 
-
-
-    public List<FoodResponseDto.FoodRecipes> getFoodRecipesByFoodName(String foodName){
-        Optional<Food> foodOptional= foodRepository.findByName(foodName);
-        if(!foodOptional.isPresent())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 음식이 없습니다");
-
-        List<FoodResponseDto.FoodRecipes> foodRecipes = new ArrayList<>();
-
-        List<Recipe> recipes=foodRepository.findAllFoodRecipesByFoodName(foodName);
-
-        Food food=foodOptional.get();
-        if(!recipes.isEmpty()) {
-            foodRecipes.add(FoodResponseDto.FoodRecipes.of(food.getWriter(),recipes,food));
-
-
-
-        }
-        else throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 레시피 를 찾을 수 없습니다.");
-
-
-        return foodRecipes;
+    public FoodResponseDto.Info findFoodById(Integer id) {
+        return FoodResponseDto.Info.of(foodRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "음식이 존재하지 않습니다.")
+        ));
     }
-
 
     public void deleteFoodById(Integer foodId){
         Food food=foodRepository.findById(foodId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 음식이 없습니다"));
