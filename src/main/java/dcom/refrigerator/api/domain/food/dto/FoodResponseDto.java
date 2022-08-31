@@ -27,7 +27,7 @@ public class FoodResponseDto {
     public static class Info {
         private Integer id;
         private UserResponseDto.Profile writer;
-        private List<RecipeResponseDto> food;
+        private List<RecipeResponseDto> ingredients;
         private List<FoodImageResponseDto.FoodImageData> images;
         private String name;
         private String description;
@@ -38,7 +38,7 @@ public class FoodResponseDto {
             return Info.builder()
                     .id(food.getId())
                     .writer(UserResponseDto.Profile.of(food.getWriter()))
-                    .food(RecipeResponseDto.of(food.getRecipes()))
+                    .ingredients(RecipeResponseDto.of(food.getRecipes()))
                     .name(food.getName())
                     .images(FoodImageResponseDto.FoodImageData.of(food.getImages()))
                     .description(food.getDescription())

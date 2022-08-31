@@ -15,6 +15,9 @@ import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,6 +38,9 @@ public class FoodService {
     private  final RecipeService recipeService;
 
     public Integer joinFood(FoodRequestDto.FoodRegister data) throws Exception{
+
+
+
         Optional<Food> foodOptionalByName=foodRepository.findByName(data.getName());
 
         //설명이 같은경우- 레시피가 이미 존재하는 경우 처리
@@ -54,12 +60,15 @@ public class FoodService {
 
 
 
+
         //비어있는 경우 내부에서 처리
         //food image 처리
         foodByName.setMainImage(foodImageService.registerMainImage(data.getMainImage(),foodByName));
         foodRepository.save(foodByName);
 
         foodImageService.registerImages(data.getImages(),data.getImageDescriptions(),foodByName);
+
+
 
 
 
