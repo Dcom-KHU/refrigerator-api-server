@@ -23,5 +23,10 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
     Optional<Food> findById(Integer id);
     Optional<Food> findByName(String name);
     List<Food> findAllByWriterId(Integer id);
+
+    @Query(value = "select * from Food order by RAND() limit 1",nativeQuery = true)
+    List<Food> findTodayFood();
+
+
 }
 

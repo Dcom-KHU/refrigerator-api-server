@@ -10,11 +10,13 @@ import dcom.refrigerator.api.domain.ingredient.Ingredient;
 import dcom.refrigerator.api.domain.ingredient.service.IngredientService;
 import dcom.refrigerator.api.domain.recipe.Recipe;
 import dcom.refrigerator.api.domain.recipe.service.RecipeService;
+import dcom.refrigerator.api.domain.refrigerator.Refrigerator;
 import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -124,5 +126,10 @@ public class FoodService {
         foodImageService.deleteAllFoodImagesByFoodId(foodId);
         foodRepository.delete(food);
         recipeService.deleteAllRecipe(recipes);
+    }
+
+    @Scheduled(cron="0 0 12 * * *")
+    public void todayFood() {
+        List<Food> food = foodRepository.findTodayFood();
     }
 }
