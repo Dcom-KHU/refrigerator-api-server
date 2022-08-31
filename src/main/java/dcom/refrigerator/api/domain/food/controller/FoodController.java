@@ -32,12 +32,20 @@ public class FoodController {
         return ResponseEntity.ok(foodService.joinFood(foodRegister));
     }
 
-    @ApiOperation("음식을 user Id로 검색, 헤더에 userId 담아야됨 ")
-    @GetMapping("/info/userId")
+    @ApiOperation("간단한 음식정보 (레시피 제외) 들을 user Id로 검색, 헤더에 userId 담아야됨 ")
+    @GetMapping("/simple/userId")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<FoodResponseDto.Simple>>FoodRecipesInfoByUserId(){
-        return ResponseEntity.ok(foodService.getFoodsByUserId());
+    public ResponseEntity<List<FoodResponseDto.Simple>>FoodRecipesSimpleByUserId(){
+        return ResponseEntity.ok(foodService.getFoodsSimpleByUserId());
     }
+
+    @ApiOperation("자세한 음식 정보 (레시피 포함)들을 user Id로 검색, 헤더에 userId 담아야됨 ")
+    @GetMapping("/info/userId")
+    @ResponseStatus(HttpStatus.OK)public ResponseEntity<List<FoodResponseDto.Info>>FoodRecipesInfoByUserId(){
+        return ResponseEntity.ok(foodService.getFoodsInfoByUserId());
+    }
+        
+    
 
     @ApiOperation("음식을 삭제 합니다.")
     @DeleteMapping(value = "/delete/{foodId}")

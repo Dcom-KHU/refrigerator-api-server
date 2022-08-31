@@ -1,5 +1,6 @@
 package dcom.refrigerator.api.domain.food.dto;
 
+import dcom.refrigerator.api.domain.user.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -43,7 +44,11 @@ public class FoodRequestDto {
         @ApiModelProperty(value = "이미지 파일들, String Array를 stringify해서 보내 주세요. (ex: JSON.stringify)", required = true)
         private List<MultipartFile> images= new ArrayList<>();
 
+        @ApiModelProperty(value = "이미지 파일들, String Array를 stringify해서 보내 주세요. (ex: JSON.stringify)", required = true)
+        private MultipartFile mainImage;
+
         @ApiModelProperty(value = "이미지 설명들, String Array를 stringify해서 보내 주세요. (ex: JSON.stringify)", required = true)
         private String imageDescriptions;
+
     }
 }

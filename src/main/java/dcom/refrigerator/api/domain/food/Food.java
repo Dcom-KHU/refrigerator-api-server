@@ -39,4 +39,7 @@ public class Food {
 
     @OneToMany(mappedBy = "food", cascade = {CascadeType.ALL})
     private Set<FoodImage> images;
+
+    @Column
+    private  Integer ingredientCount;
 }
