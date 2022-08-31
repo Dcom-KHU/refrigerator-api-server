@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 @Api(tags = {"ingredient Controller"})
 @Slf4j
 @RestController
-@RequestMapping("/ingredient")
+@RequestMapping("/Ingredient")
 @RequiredArgsConstructor
 public class IngredientController {
 

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Api(tags = {"Recipe Controller"})
+@Api(tags = {"Refrigerator Controller"})
 @Slf4j
 @RestController
 @RequestMapping("/refrigerator")
