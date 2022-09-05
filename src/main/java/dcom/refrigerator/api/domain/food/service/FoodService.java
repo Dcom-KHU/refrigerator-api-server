@@ -11,7 +11,6 @@ import dcom.refrigerator.api.domain.ingredient.Ingredient;
 import dcom.refrigerator.api.domain.ingredient.service.IngredientService;
 import dcom.refrigerator.api.domain.recipe.Recipe;
 import dcom.refrigerator.api.domain.recipe.service.RecipeService;
-import dcom.refrigerator.api.domain.refrigerator.Refrigerator;
 import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -118,6 +117,13 @@ public class FoodService {
 
         return FoodResponseDto.Info.of(foods);
     }
+
+   public List<FoodResponseDto.RefrigeratorFood> refrigeratorFood(){
+       Integer userId = userService.getCurrentUser().getId();
+       List<Food> foods = foodRepository.findRefrigeratorFood(userId);
+
+       return FoodResponseDto.RefrigeratorFood.of(foods);
+   }
 
 
 
