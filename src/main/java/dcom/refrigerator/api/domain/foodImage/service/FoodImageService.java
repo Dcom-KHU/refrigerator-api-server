@@ -57,8 +57,62 @@ public class FoodImageService {
         return foodImageRepository.findFoodImageByOriginFileName(originFileName).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"image 를 찾을 수 없습니다."));
     }
 
+
+    public String updateImages(Food food,String imageDescription,MultipartFile ... images )throws Exception{
+        String url="";
+        if(images.length !=0) {
+            String[] imageDescriptions = imageDescription
+                    .replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",");
+
+            if (images.length != imageDescriptions.length)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "각 이미지에는 설명이 반드시 필요합니다.");
+
+            Iterator<String> iter = Arrays.stream(imageDescriptions).iterator();
+
+            for (MultipartFile multipartFile : images) {
+                if (iter.hasNext()) {
+                    String imagePath = null;
+                    String absolutePath = new File("").getAbsolutePath() + "/";
+                    String path = "images";
+                    File file = new File(path);
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+
+                    if (!multipartFile.isEmpty()) {
+                        String contentType = multipartFile.getContentType();
+                        String originalFileExtension;
+                        if (ObjectUtils.isEmpty(contentType)) {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미지 파일은 jpg, png 만 가능합니다.");
+                        } else {
+                            if (contentType.contains("image/jpeg")) {
+                                originalFileExtension = ".jpg";
+                            } else if (contentType.contains("image/png")) {
+                                originalFileExtension = ".png";
+                            } else {
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미지 파일은 jpg, png 만 가능합니다.");
+                            }
+                        }
+
+                        imagePath = path + "/" + UUID.randomUUID() + originalFileExtension;
+                        file = new File(absolutePath + imagePath);
+                        multipartFile.transferTo(file);
+
+                        FoodImage foodImage = FoodImage.builder()
+                                .food(foodRepository.findByName(food.getName()).get())
+                                .originFileName(multipartFile.getOriginalFilename())
+                                .filePath(absolutePath + imagePath)
+                                .description(iter.next().strip()).build();
+                        url=foodImage.getFilePath();
+                        foodImageRepository.save(foodImage);
+                    }
+                }
+            }
+        }
+        return url;
+    }
+
     public String registerMainImage(MultipartFile image,Food food) throws  Exception{
-        log.info("test0");
         String imagePath = null;
         String absolutePath = new File("").getAbsolutePath() + "/";
         String path = "images";
@@ -66,6 +120,7 @@ public class FoodImageService {
         if (!file.exists()) {
             file.mkdirs();
         }
+
 
         if (!image.isEmpty()) {
             String contentType = image.getContentType();
@@ -93,6 +148,7 @@ public class FoodImageService {
                     .description(food.getDescription()).build();
 
             foodImageRepository.save(foodImage);
+
 
             return foodImage.getFilePath();
 

@@ -5,6 +5,7 @@ import dcom.refrigerator.api.domain.food.dto.FoodRequestDto;
 import dcom.refrigerator.api.domain.food.dto.FoodResponseDto;
 import dcom.refrigerator.api.domain.food.service.FoodService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags = {"Food Controller"})
@@ -25,10 +30,20 @@ public class FoodController {
 
     private final FoodService foodService;
 
+    private String name;
+    private String description;
+    private String category;
+    private String ingredient;
+    private String ingredientAmount;
+    private List<MultipartFile> images= new ArrayList<>();
+    private MultipartFile mainImage;
+    private String imageDescriptions;
     @ApiOperation("음식 등록, 헤더에 userId 담아야됨 ")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Integer> registerFood(@Valid @ModelAttribute FoodRequestDto.FoodRegister foodRegister) throws Exception {
+    public ResponseEntity<Integer> registerFood(@Valid
+                                                    @ModelAttribute FoodRequestDto.FoodRegister foodRegister) throws Exception {
+
         return ResponseEntity.ok(foodService.joinFood(foodRegister));
     }
 
@@ -55,10 +70,22 @@ public class FoodController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @ApiOperation("음식을 user Id로 검색, 헤더에 userId 담아야됨 ")
+    @ApiOperation("음식을 food Id로 검색")
     @GetMapping("/{foodId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<FoodResponseDto.Info> findById(@PathVariable Integer foodId) {
         return ResponseEntity.ok(foodService.findFoodById(foodId));
     }
+
+    @ApiOperation("음식 수정, 헤더에 userId 담아야됨")
+    @PutMapping("/update/{foodId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Integer> updateFood(@Valid
+                                                @ModelAttribute FoodRequestDto.FoodRegister foodRegister,@PathVariable Integer foodId) throws Exception {
+
+        return ResponseEntity.ok(foodService.updateFood(foodRegister,foodId));
+    }
+
+
+
 }
