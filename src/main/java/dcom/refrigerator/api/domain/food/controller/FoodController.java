@@ -78,9 +78,9 @@ public class FoodController {
     }
 
     @ApiOperation("음식 수정, 헤더에 userId 담아야됨")
-    @PutMapping("/update/{foodId}")
+    @PutMapping("/modify/{foodId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Integer> updateFood(@Valid
+    public ResponseEntity<Integer> modifyFood(@Valid
                                                 @ModelAttribute FoodRequestDto.FoodRegister foodRegister,@PathVariable Integer foodId) throws Exception {
 
         return ResponseEntity.ok(foodService.updateFood(foodRegister,foodId));
