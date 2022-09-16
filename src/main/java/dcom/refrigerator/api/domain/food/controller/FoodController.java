@@ -7,6 +7,7 @@ import dcom.refrigerator.api.domain.food.dto.FoodResponseDto;
 import dcom.refrigerator.api.domain.food.service.FoodService;
 import dcom.refrigerator.api.domain.refrigerator.dto.RefrigeratorResponseDto;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.Getter;
@@ -15,11 +16,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
-@Api(tags = {"Recipe Controller"})
+@Api(tags = {"Food Controller"})
 @Slf4j
 @RestController
 @RequestMapping("/food")
@@ -28,10 +33,20 @@ public class FoodController {
 
     private final FoodService foodService;
 
+    private String name;
+    private String description;
+    private String category;
+    private String ingredient;
+    private String ingredientAmount;
+    private List<MultipartFile> images= new ArrayList<>();
+    private MultipartFile mainImage;
+    private String imageDescriptions;
     @ApiOperation("음식 등록, 헤더에 userId 담아야됨 ")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Integer> registerFood(@Valid @ModelAttribute FoodRequestDto.FoodRegister foodRegister) throws Exception {
+    public ResponseEntity<Integer> registerFood(@Valid
+                                                    @ModelAttribute FoodRequestDto.FoodRegister foodRegister) throws Exception {
+
         return ResponseEntity.ok(foodService.joinFood(foodRegister));
     }
 
@@ -58,11 +73,20 @@ public class FoodController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @ApiOperation("음식을 user Id로 검색, 헤더에 userId 담아야됨 ")
+    @ApiOperation("음식을 food Id로 검색")
     @GetMapping("/{foodId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<FoodResponseDto.Info> findById(@PathVariable Integer foodId) {
         return ResponseEntity.ok(foodService.findFoodById(foodId));
+    }
+
+    @ApiOperation("음식 수정, 헤더에 userId 담아야됨")
+    @PutMapping("/modify/{foodId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Integer> modifyFood(@Valid
+                                                @ModelAttribute FoodRequestDto.FoodRegister foodRegister,@PathVariable Integer foodId) throws Exception {
+
+        return ResponseEntity.ok(foodService.updateFood(foodRegister,foodId));
     }
 
     @ApiOperation("냉장고 속 재료로 만들 수 있는 음식 조회")
@@ -71,4 +95,5 @@ public class FoodController {
     public ResponseEntity<List<FoodResponseDto.RefrigeratorFood>> refrigeratorFood() {
         return ResponseEntity.ok(foodService.refrigeratorFood());
     }
+
 }

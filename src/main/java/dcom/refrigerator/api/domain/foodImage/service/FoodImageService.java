@@ -56,53 +56,8 @@ public class FoodImageService {
     public FoodImage getFoodImageByOriginFileName(String originFileName) {
         return foodImageRepository.findFoodImageByOriginFileName(originFileName).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"image 를 찾을 수 없습니다."));
     }
-
-    public String registerMainImage(MultipartFile image,Food food) throws  Exception{
-        log.info("test0");
-        String imagePath = null;
-        String absolutePath = new File("").getAbsolutePath() + "/";
-        String path = "images";
-        File file = new File(path);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-
-        if (!image.isEmpty()) {
-            String contentType = image.getContentType();
-            String originalFileExtension;
-            if (ObjectUtils.isEmpty(contentType)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"이미지 파일은 jpg, png 만 가능합니다.");
-            } else {
-                if (contentType.contains("image/jpeg")) {
-                    originalFileExtension = ".jpg";
-                } else if (contentType.contains("image/png")) {
-                    originalFileExtension = ".png";
-                } else {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"이미지 파일은 jpg, png 만 가능합니다.");
-                }
-            }
-
-            imagePath = path + "/" + UUID.randomUUID() + originalFileExtension;
-            file = new File(absolutePath + imagePath);
-            image.transferTo(file);
-
-            FoodImage foodImage = FoodImage.builder()
-                    .food(foodRepository.findByName(food.getName()).get())
-                    .originFileName(image.getOriginalFilename())
-                    .filePath(absolutePath + imagePath)
-                    .description(food.getDescription()).build();
-
-            foodImageRepository.save(foodImage);
-
-            return foodImage.getFilePath();
-
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"이미지 파일이 비어있습니다. ");
-        }
-    }
-
-    public void registerImages(List<MultipartFile>images, String imageDescription,Food food) throws  Exception {
-
+    public String registerImages(List<MultipartFile>images, String imageDescription,Food food) throws  Exception {
+        String url="";
         if (!images.isEmpty()) {
 
             String[] imageDescriptions = imageDescription
@@ -147,30 +102,38 @@ public class FoodImageService {
                         }
 
                         imagePath = path + "/" + UUID.randomUUID() + originalFileExtension;
-                        file = new File(absolutePath + imagePath);
+                        url=absolutePath+imagePath;
+                        file = new File(url);
                         multipartFile.transferTo(file);
 
                         FoodImage foodImage = FoodImage.builder()
-                                .food(foodRepository.findByName(food.getName()).get())
                                 .originFileName(multipartFile.getOriginalFilename())
-                                .filePath(absolutePath + imagePath)
+                                .filePath(url)
+                                .food(food)
                                 .description(iter.next().strip()).build();
 
                         foodImageRepository.save(foodImage);
 
+                        return url;
                     } else {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"이미지 파일이 비어있습니다. ");
                     }
                 }
             }
         }
+        return url;
     }
+
+
+
     public void deleteAllFoodImagesByFoodId(Integer foodId) {
         Optional<Food> foodOptional=foodRepository.findById(foodId);
         if(foodOptional.isPresent()){
             List<FoodImage> foodImages= foodImageRepository.findAllByFood(foodOptional.get());
             foodImageRepository.deleteAll(foodImages);
         }
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 id에 대한 음식이 없습니다. ");
+
     }
 
 

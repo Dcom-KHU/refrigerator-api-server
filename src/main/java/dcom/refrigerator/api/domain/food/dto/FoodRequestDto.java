@@ -4,6 +4,9 @@ import dcom.refrigerator.api.domain.user.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
@@ -11,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 public class FoodRequestDto {
     @ApiModel(value="food 등록")
     @Builder
@@ -50,5 +54,9 @@ public class FoodRequestDto {
         @ApiModelProperty(value = "이미지 설명들, String Array를 stringify해서 보내 주세요. (ex: JSON.stringify)", required = true)
         private String imageDescriptions;
 
+
     }
+
+
+
 }
