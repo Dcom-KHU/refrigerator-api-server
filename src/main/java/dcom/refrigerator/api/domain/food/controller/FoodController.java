@@ -1,13 +1,16 @@
 package dcom.refrigerator.api.domain.food.controller;
 
 
+import dcom.refrigerator.api.domain.food.Food;
 import dcom.refrigerator.api.domain.food.dto.FoodRequestDto;
 import dcom.refrigerator.api.domain.food.dto.FoodResponseDto;
 import dcom.refrigerator.api.domain.food.service.FoodService;
+import dcom.refrigerator.api.domain.refrigerator.dto.RefrigeratorResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -86,6 +89,11 @@ public class FoodController {
         return ResponseEntity.ok(foodService.updateFood(foodRegister,foodId));
     }
 
-
+    @ApiOperation("냉장고 속 재료로 만들 수 있는 음식 조회")
+    @GetMapping("/refrigeratorFood")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<FoodResponseDto.RefrigeratorFood>> refrigeratorFood() {
+        return ResponseEntity.ok(foodService.refrigeratorFood());
+    }
 
 }
