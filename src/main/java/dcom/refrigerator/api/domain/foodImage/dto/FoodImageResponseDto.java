@@ -28,6 +28,7 @@ public class FoodImageResponseDto {
         private String originFileName;  // 파일 원본명
         private String filePath;  // 파일 저장 경로
         private String description;
+        private Integer imageNumber;
 
         public static FoodImageResponseDto.FoodImageData of(FoodImage foodImage) {
             return FoodImageData.builder()
@@ -35,6 +36,7 @@ public class FoodImageResponseDto {
                     .originFileName(foodImage.getOriginFileName())
                     .filePath(foodImage.getFilePath())
                     .description(foodImage.getDescription())
+                    .imageNumber(foodImage.getNumber())
                     .build();
         }
 

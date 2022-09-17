@@ -59,6 +59,9 @@ public class FoodImageService {
     public String registerImages(List<MultipartFile>images, String imageDescription,Food food) throws  Exception {
         String url="";
         if (!images.isEmpty()) {
+            Integer imageNumber=0; // 사진 순서 기록용
+            if(imageDescription!=food.getDescription()) //메인이미지인경우 0
+                imageNumber+=1;
 
             String[] imageDescriptions = imageDescription
                     .replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",");
@@ -70,7 +73,6 @@ public class FoodImageService {
 
 
             Iterator<String> iter = Arrays.stream(imageDescriptions).iterator();
-
             for (MultipartFile multipartFile:images) {
 
                 log.info(multipartFile.getContentType().toString());
@@ -110,11 +112,12 @@ public class FoodImageService {
                                 .originFileName(multipartFile.getOriginalFilename())
                                 .filePath(url)
                                 .food(food)
+                                .number(imageNumber)
                                 .description(iter.next().strip()).build();
 
+                        imageNumber+=1;
                         foodImageRepository.save(foodImage);
 
-                        return url;
                     } else {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"이미지 파일이 비어있습니다. ");
                     }

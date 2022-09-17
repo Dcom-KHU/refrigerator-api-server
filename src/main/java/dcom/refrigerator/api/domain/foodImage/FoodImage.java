@@ -35,4 +35,7 @@ public class FoodImage {
 
     @Column
     private String description;
+
+    @Column
+    private Integer number; // 사진 순서
 }
