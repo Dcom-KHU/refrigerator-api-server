@@ -60,7 +60,7 @@ public class FoodImageController {
     }
 
     @GetMapping("/info/foodId/{foodId}")
-    @ApiOperation("해당 음식 아이디를 가진 이미지의 정보를 반환 합니다.")
+    @ApiOperation("해당 음식 아이디를 가진 이미지들의 정보를 반환 합니다.")
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity <List<FoodImageResponseDto.FoodImageData>> getAllFoodImageByFoodId(@ApiParam(value="food ID", required = true) @PathVariable final Integer foodId) {
         return ResponseEntity.ok(FoodImageResponseDto.FoodImageData.of( foodImageService.getAllFoodImageByFoodId(foodId)));

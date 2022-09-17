@@ -50,7 +50,6 @@ public class FoodService {
                 .category(FoodCategory.valueOf(data.getCategory()))
                 .ingredientCount(0)
                 .build();
-        foodRepository.save(food);
 
         //비어있는 경우 내부에서 처리
         //food image 처리
@@ -58,6 +57,7 @@ public class FoodService {
         mainImage.add(data.getMainImage());
         food.setMainImage(foodImageService.registerImages(mainImage, food.getDescription(),food));
         foodImageService.registerImages(data.getImages(), data.getImageDescriptions(), food);
+        foodRepository.save(food);
 
 /*
         JSONParser jsonParse = new JSONParser().parse()*/
@@ -144,24 +144,23 @@ public class FoodService {
 
 
     public Integer updateFood(FoodRequestDto.FoodRegister data,Integer foodId) throws Exception{
-        Food food = Food.builder()
-                .id(foodRepository.findById(foodId)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 음식이 없습니다"))
-                        .getId())
-                .name(data.getName())
-                .writer(userService.getCurrentUser())
-                .description(data.getDescription())
-                .category(FoodCategory.valueOf(data.getCategory()))
-                .ingredientCount(0)
-                .build();
-        foodRepository.save(food);
+        Food food= foodRepository.findById(foodId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 음식이 없습니다"));
+        food.setName(data.getName());
+        food.setCategory(FoodCategory.valueOf( data.getCategory()));
+        food.setDescription(data.getDescription());
+        food.setImages(null);
+        food.setMainImage(null);
+        foodImageService.deleteAllFoodImagesByFoodId(foodId);
+
+        /*foodRepository.clear ??*/
 
         List<MultipartFile> mainImage=new ArrayList<>();
         mainImage.add(data.getMainImage());
-
-        //수정해야됨!! -> food image 업데이트 아닌 추가 저장이 되고있음-> delete merge err 발생 때매 update image 함수를 만들어야할듯?
         food.setMainImage(foodImageService.registerImages(mainImage, food.getDescription(),food));
         foodImageService.registerImages(data.getImages(), data.getImageDescriptions(), food);
+        foodRepository.save(food);
+
 
 
 
