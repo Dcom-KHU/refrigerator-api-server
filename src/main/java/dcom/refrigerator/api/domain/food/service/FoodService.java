@@ -197,11 +197,6 @@ public class FoodService {
         return food.getId();
     }
 
-
-
-
-}
-
     @Scheduled(cron="0 0 12 * * *")
     public void todayFood() {
         List<Food> food = foodRepository.findTodayFood();
