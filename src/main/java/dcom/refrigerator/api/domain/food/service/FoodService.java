@@ -20,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -117,6 +118,13 @@ public class FoodService {
         return FoodResponseDto.Info.of(foods);
     }
 
+   public List<FoodResponseDto.RefrigeratorFood> refrigeratorFood(){
+       Integer userId = userService.getCurrentUser().getId();
+       List<Food> foods = foodRepository.findRefrigeratorFood(userId);
+
+       return FoodResponseDto.RefrigeratorFood.of(foods);
+   }
+
 
     public FoodResponseDto.Info findFoodById(Integer id) {
         return FoodResponseDto.Info.of(foodRepository.findById(id).orElseThrow(
@@ -133,6 +141,7 @@ public class FoodService {
         foodRepository.delete(food);
         recipeService.deleteAllRecipe(recipes);
     }
+
 
     public Integer updateFood(FoodRequestDto.FoodRegister data,Integer foodId) throws Exception{
         Food food= foodRepository.findById(foodId)
@@ -192,3 +201,10 @@ public class FoodService {
 
 
 }
+
+    @Scheduled(cron="0 0 12 * * *")
+    public void todayFood() {
+        List<Food> food = foodRepository.findTodayFood();
+    }
+}
+
