@@ -16,11 +16,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeResponseDto {
+    private Integer id;
     private String food;
     private String amount;
 
     public static RecipeResponseDto of(Recipe recipe) {
         return RecipeResponseDto.builder()
+                .id(recipe.getId())
                 .food(recipe.getFood().getName())
                 .amount(recipe.getAmount())
                 .build();
