@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -78,9 +79,7 @@ public class FoodController {
     @ApiOperation("음식 수정, 헤더에 userId 담아야됨")
     @PutMapping("/modify/{foodId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Integer> modifyFood(@Valid
-                                                @ModelAttribute FoodRequestDto.FoodRegister foodRegister,@PathVariable Integer foodId) throws Exception {
-
+    public ResponseEntity<Integer> modifyFood(@Valid @ModelAttribute FoodRequestDto.FoodRegister foodRegister,@PathVariable Integer foodId) throws Exception {
         return ResponseEntity.ok(foodService.updateFood(foodRegister,foodId));
     }
 
@@ -94,7 +93,7 @@ public class FoodController {
     @ApiOperation("음식 검색. 제목과 내용을 이용")
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Page<FoodDocument>> searchFood(String query, Pageable pageable) {
+    public ResponseEntity<Page<FoodDocument>> searchFood(@ApiParam(value="검색어", required = true) String query, @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(foodService.searchFood(query, pageable));
     }
 }

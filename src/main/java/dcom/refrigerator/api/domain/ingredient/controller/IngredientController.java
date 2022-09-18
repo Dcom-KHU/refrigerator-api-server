@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class IngredientController {
 
     @ApiOperation("재료를 검색 합니다.")
     @GetMapping("/search")
-    public ResponseEntity<List<IngredientDocument>> searchIngredient(String query) {
+    public ResponseEntity<List<IngredientDocument>> searchIngredient(@ApiParam(value="검색어", required = true) String query) {
         return ResponseEntity.ok(ingredientService.searchIngredient(query));
     }
 }
