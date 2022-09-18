@@ -2,6 +2,7 @@ package dcom.refrigerator.api.domain.food.controller;
 
 
 import dcom.refrigerator.api.domain.food.Food;
+import dcom.refrigerator.api.domain.food.FoodDocument;
 import dcom.refrigerator.api.domain.food.dto.FoodRequestDto;
 import dcom.refrigerator.api.domain.food.dto.FoodResponseDto;
 import dcom.refrigerator.api.domain.food.service.FoodService;
@@ -13,6 +14,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,14 +36,6 @@ public class FoodController {
 
     private final FoodService foodService;
 
-    private String name;
-    private String description;
-    private String category;
-    private String ingredient;
-    private String ingredientAmount;
-    private List<MultipartFile> images= new ArrayList<>();
-    private MultipartFile mainImage;
-    private String imageDescriptions;
     @ApiOperation("음식 등록, 헤더에 userId 담아야됨 ")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK)
@@ -96,4 +91,10 @@ public class FoodController {
         return ResponseEntity.ok(foodService.refrigeratorFood());
     }
 
+    @ApiOperation("음식 검색. 제목과 내용을 이용")
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Page<FoodDocument>> searchFood(String query, Pageable pageable) {
+        return ResponseEntity.ok(foodService.searchFood(query, pageable));
+    }
 }

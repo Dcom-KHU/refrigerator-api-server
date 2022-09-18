@@ -2,8 +2,10 @@ package dcom.refrigerator.api.domain.food.service;
 
 import dcom.refrigerator.api.domain.food.Food;
 import dcom.refrigerator.api.domain.food.FoodCategory;
+import dcom.refrigerator.api.domain.food.FoodDocument;
 import dcom.refrigerator.api.domain.food.dto.FoodRequestDto;
 import dcom.refrigerator.api.domain.food.dto.FoodResponseDto;
+import dcom.refrigerator.api.domain.food.repositroy.FoodDocumentRepository;
 import dcom.refrigerator.api.domain.food.repositroy.FoodRepository;
 import dcom.refrigerator.api.domain.foodImage.FoodImage;
 import dcom.refrigerator.api.domain.foodImage.repository.FoodImageRepository;
@@ -16,9 +18,17 @@ import dcom.refrigerator.api.domain.user.User;
 import dcom.refrigerator.api.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.*;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,6 +38,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -35,11 +46,13 @@ import java.util.*;
 @Slf4j
 public class FoodService {
     private final FoodRepository foodRepository;
+    private final FoodDocumentRepository foodDocumentRepository;
     private final UserService userService;
     private final FoodImageService foodImageService;
     private final FoodImageRepository foodImageRepository;
     private final IngredientService ingredientService;
     private final RecipeService recipeService;
+    private final ElasticsearchOperations elasticsearchOperations;
 
     public Integer joinFood(FoodRequestDto.FoodRegister data) throws Exception {
 
@@ -87,7 +100,7 @@ public class FoodService {
             }
         }
 
-
+        foodDocumentRepository.save(new FoodDocument(food));
         return food.getId();
     }
 
@@ -200,6 +213,14 @@ public class FoodService {
     @Scheduled(cron="0 0 12 * * *")
     public void todayFood() {
         List<Food> food = foodRepository.findTodayFood();
+    }
+
+    public Page<FoodDocument> searchFood(String query, Pageable pageable) {
+        MultiMatchQueryBuilder matchQuery = QueryBuilders.multiMatchQuery(query, "name", "description");
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(matchQuery).withPageable(pageable).build();
+        SearchHits<FoodDocument> search = elasticsearchOperations.search(searchQuery, FoodDocument.class);
+        SearchPage<FoodDocument> searchPage = SearchHitSupport.searchPageFor(search, searchQuery.getPageable());
+        return (Page<FoodDocument>) SearchHitSupport.unwrapSearchHits(searchPage);
     }
 }
 
