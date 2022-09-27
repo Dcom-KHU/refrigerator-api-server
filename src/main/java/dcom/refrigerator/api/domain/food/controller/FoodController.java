@@ -86,7 +86,7 @@ public class FoodController {
     @ApiOperation("냉장고 속 재료로 만들 수 있는 음식 조회")
     @GetMapping("/refrigeratorFood")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<FoodResponseDto.RefrigeratorFood>> refrigeratorFood() {
+    public ResponseEntity<List<FoodResponseDto.Simple>> refrigeratorFood() {
         return ResponseEntity.ok(foodService.refrigeratorFood());
     }
 
@@ -96,4 +96,12 @@ public class FoodController {
     public ResponseEntity<Page<FoodDocument>> searchFood(@ApiParam(value="검색어", required = true) String query, @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(foodService.searchFood(query, pageable));
     }
+
+    @ApiOperation("오늘의 음식 추천, 헤더에 userId 담아야됨")
+    @GetMapping("/todayFood")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<FoodResponseDto.Simple> todayFood() {
+        return ResponseEntity.ok(foodService.todayFood());
+    }
 }
+
