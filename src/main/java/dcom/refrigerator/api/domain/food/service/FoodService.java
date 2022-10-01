@@ -15,6 +15,7 @@ import dcom.refrigerator.api.domain.ingredient.service.IngredientService;
 import dcom.refrigerator.api.domain.recipe.Recipe;
 import dcom.refrigerator.api.domain.recipe.service.RecipeService;
 import dcom.refrigerator.api.domain.user.User;
+import dcom.refrigerator.api.domain.user.repository.UserRepository;
 import dcom.refrigerator.api.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,7 @@ public class FoodService {
     private final IngredientService ingredientService;
     private final RecipeService recipeService;
     private final ElasticsearchOperations elasticsearchOperations;
+    private final UserRepository userRepository;
 
     public Integer joinFood(FoodRequestDto.FoodRegister data) throws Exception {
 
@@ -131,11 +133,17 @@ public class FoodService {
         return FoodResponseDto.Info.of(foods);
     }
 
-   public List<FoodResponseDto.RefrigeratorFood> refrigeratorFood(){
+   public List<FoodResponseDto.Simple> refrigeratorFood(){
+        List<Food> foodList = foodRepository.findAll();
+        for(Food food: foodList){
+            if (food.getIngredientCount() == null){
+                food.setIngredientCount(foodRepository.ingredientCount(food.getId()));
+            }
+        }
        Integer userId = userService.getCurrentUser().getId();
        List<Food> foods = foodRepository.findRefrigeratorFood(userId);
 
-       return FoodResponseDto.RefrigeratorFood.of(foods);
+       return FoodResponseDto.Simple.of(foods);
    }
 
 
@@ -210,17 +218,26 @@ public class FoodService {
         return food.getId();
     }
 
-    @Scheduled(cron="0 0 12 * * *")
-    public void todayFood() {
-        List<Food> food = foodRepository.findTodayFood();
-    }
-
     public Page<FoodDocument> searchFood(String query, Pageable pageable) {
         MultiMatchQueryBuilder matchQuery = QueryBuilders.multiMatchQuery(query, "name", "description");
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(matchQuery).withPageable(pageable).build();
         SearchHits<FoodDocument> search = elasticsearchOperations.search(searchQuery, FoodDocument.class);
         SearchPage<FoodDocument> searchPage = SearchHitSupport.searchPageFor(search, searchQuery.getPageable());
         return (Page<FoodDocument>) SearchHitSupport.unwrapSearchHits(searchPage);
+    }
+
+    @Scheduled(cron="0 0 12 * * *")
+    public void storeTodayFood(){
+        List<User> user = userRepository.findAll();
+        for(User users : user){
+            Food todayFood = foodRepository.findTodayFood(users.getId());
+            users.setTodayFood(todayFood);
+        }
+    }
+
+    public FoodResponseDto.Simple todayFood(){
+        Food todayFood = userService.getCurrentUser().getTodayFood();
+        return FoodResponseDto.Simple.of(todayFood);
     }
 }
 

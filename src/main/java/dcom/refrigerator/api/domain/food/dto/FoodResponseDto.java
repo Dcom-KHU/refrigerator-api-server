@@ -81,24 +81,4 @@ public class FoodResponseDto {
             return foods.stream().map(Simple::of).collect(Collectors.toList());
         }
     }
-
-    @ApiModel(value = "냉장고 속 음식 재료로 만드는거")
-    @Builder
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class RefrigeratorFood{
-        private String name;
-
-        public static RefrigeratorFood of(Food food){
-            return RefrigeratorFood.builder()
-                    .name(food.getName())
-                    .build();
-        }
-
-        public static List<RefrigeratorFood> of(List<Food> foods){
-            return foods.stream().map(RefrigeratorFood::of).collect(Collectors.toList());
-        }
-    }
 }
