@@ -45,7 +45,8 @@ public class IngredientController {
 
     @ApiOperation("재료를 검색 합니다.")
     @GetMapping("/search")
-    public ResponseEntity<List<IngredientDocument>> searchIngredient(@ApiParam(value="검색어", required = true) String query) {
+    public ResponseEntity<List<IngredientDocument>> searchIngredient(@ApiParam(value="검색어", required = true)
+                                                                     @RequestParam String query) {
         return ResponseEntity.ok(ingredientService.searchIngredient(query));
     }
 }

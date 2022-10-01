@@ -23,6 +23,9 @@ public class FoodDocument {
     @Field(type = FieldType.Text)
     private String description;
 
+    @Field(type = FieldType.Keyword)
+    private FoodCategory category;
+
     @Field(type = FieldType.Keyword, index = false)
     private String mainImage;
 
@@ -31,5 +34,6 @@ public class FoodDocument {
         this.name = food.getName();
         this.description = food.getDescription();
         this.mainImage = food.getMainImage();
+        this.category = food.getCategory();
     }
 }

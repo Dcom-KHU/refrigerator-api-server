@@ -90,11 +90,11 @@ public class FoodController {
         return ResponseEntity.ok(foodService.refrigeratorFood());
     }
 
-    @ApiOperation("음식 검색. 제목과 내용을 이용")
+    @ApiOperation("음식 검색. 제목과 내용, 카테고리를 이용")
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Page<FoodDocument>> searchFood(@ApiParam(value="검색어", required = true) String query, @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(foodService.searchFood(query, pageable));
+    public ResponseEntity<Page<FoodDocument>> searchFood(@ModelAttribute FoodRequestDto.Search search, @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(foodService.searchFood(search, pageable));
     }
 
     @ApiOperation("오늘의 음식 추천, 헤더에 userId 담아야됨")

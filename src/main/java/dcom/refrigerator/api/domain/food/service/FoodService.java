@@ -213,11 +213,22 @@ public class FoodService {
         return food.getId();
     }
 
-    public Page<FoodDocument> searchFood(String query, Pageable pageable) {
-        MultiMatchQueryBuilder matchQuery = QueryBuilders.multiMatchQuery(query, "name", "description");
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(matchQuery).withPageable(pageable).build();
-        SearchHits<FoodDocument> search = elasticsearchOperations.search(searchQuery, FoodDocument.class);
-        SearchPage<FoodDocument> searchPage = SearchHitSupport.searchPageFor(search, searchQuery.getPageable());
+    public Page<FoodDocument> searchFood(FoodRequestDto.Search search, Pageable pageable) {
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+
+        if (search.getQuery() != null) {
+            MultiMatchQueryBuilder matchQuery = QueryBuilders.multiMatchQuery(search.getQuery(), "name", "description");
+            queryBuilder = queryBuilder.withQuery(matchQuery);
+        }
+
+        if (search.getCategory() != null) {
+            MatchQueryBuilder categoryQuery = QueryBuilders.matchQuery("category", search.getCategory());
+            queryBuilder = queryBuilder.withQuery(categoryQuery);
+        }
+
+        NativeSearchQuery searchQuery = queryBuilder.withPageable(pageable).build();
+        SearchHits<FoodDocument> searchHits = elasticsearchOperations.search(searchQuery, FoodDocument.class);
+        SearchPage<FoodDocument> searchPage = SearchHitSupport.searchPageFor(searchHits, searchQuery.getPageable());
         return (Page<FoodDocument>) SearchHitSupport.unwrapSearchHits(searchPage);
     }
 

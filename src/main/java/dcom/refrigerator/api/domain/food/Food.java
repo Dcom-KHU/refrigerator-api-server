@@ -41,5 +41,5 @@ public class Food {
     private Set<FoodImage> images;
 
     @Column
-    private  Integer ingredientCount;
+    private Integer ingredientCount;
 }

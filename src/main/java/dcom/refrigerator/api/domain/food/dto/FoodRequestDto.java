@@ -1,5 +1,6 @@
 package dcom.refrigerator.api.domain.food.dto;
 
+import dcom.refrigerator.api.domain.food.FoodCategory;
 import dcom.refrigerator.api.domain.user.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -57,6 +58,17 @@ public class FoodRequestDto {
 
     }
 
+    @ApiModel(value="food 검색")
+    @Builder
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Search {
+        @ApiModelProperty(value = "검색어")
+        private String query;
 
-
+        @ApiModelProperty(value = "음식 카테고리")
+        private FoodCategory category;
+    }
 }
