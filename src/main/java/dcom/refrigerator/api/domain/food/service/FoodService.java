@@ -66,21 +66,23 @@ public class FoodService {
                 .ingredientCount(0)
                 .build();
 
+        String[] ingredientAmounts = data.getIngredientAmount().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",");
+        Iterator<String> iter = Arrays.stream(ingredientAmounts).iterator();
+        String[] ingredients = data.getIngredient().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",");
+
         //비어있는 경우 내부에서 처리
         //food image 처리
         List<MultipartFile> mainImage=new ArrayList<>();
         mainImage.add(data.getMainImage());
         food.setMainImage(foodImageService.registerImages(mainImage, food.getDescription(),food));
         foodImageService.registerImages(data.getImages(), data.getImageDescriptions(), food);
+
+        // food에 음식 갯수 까지 저장
+        food.setIngredientCount(ingredients.length);
         foodRepository.save(food);
 
 /*
         JSONParser jsonParse = new JSONParser().parse()*/
-
-
-        String[] ingredientAmounts = data.getIngredientAmount().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",");
-        Iterator<String> iter = Arrays.stream(ingredientAmounts).iterator();
-        String[] ingredients = data.getIngredient().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\\"", "").replaceAll("\\'", "").split(",");
 
 
         //재료별 재료 양 필수
@@ -101,7 +103,6 @@ public class FoodService {
                 recipeService.joinRecipe(recipe);
             }
         }
-
         foodDocumentRepository.save(new FoodDocument(food));
         return food.getId();
     }
@@ -134,12 +135,6 @@ public class FoodService {
     }
 
    public List<FoodResponseDto.Simple> refrigeratorFood(){
-        List<Food> foodList = foodRepository.findAll();
-        for(Food food: foodList){
-            if (food.getIngredientCount() == null){
-                food.setIngredientCount(foodRepository.ingredientCount(food.getId()));
-            }
-        }
        Integer userId = userService.getCurrentUser().getId();
        List<Food> foods = foodRepository.findRefrigeratorFood(userId);
 
