@@ -47,14 +47,14 @@ public class FoodController {
     }
 
     @ApiOperation("간단한 음식정보 (레시피 제외) 들을 user Id로 검색, 헤더에 userId 담아야됨 ")
-    @GetMapping("/simple/userId")
+    @GetMapping("/simple")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<FoodResponseDto.Simple>>FoodRecipesSimpleByUserId(){
         return ResponseEntity.ok(foodService.getFoodsSimpleByUserId());
     }
 
     @ApiOperation("자세한 음식 정보 (레시피 포함)들을 user Id로 검색, 헤더에 userId 담아야됨 ")
-    @GetMapping("/info/userId")
+    @GetMapping("/info")
     @ResponseStatus(HttpStatus.OK)public ResponseEntity<List<FoodResponseDto.Info>>FoodRecipesInfoByUserId(){
         return ResponseEntity.ok(foodService.getFoodsInfoByUserId());
     }
