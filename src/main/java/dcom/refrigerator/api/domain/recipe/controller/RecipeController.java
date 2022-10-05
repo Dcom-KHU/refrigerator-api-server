@@ -22,7 +22,7 @@ public class RecipeController {
 
 
 
-    @ApiOperation("레시피 삭제 recipe id가 필요해요  ")
+    /*@ApiOperation("레시피 삭제 recipe id가 필요해요  ")
     @DeleteMapping(value = "/delete/{recipeId}")
     public ResponseEntity<Void> deleteRecipe(@ApiParam(value="레시피 ID", required = true) @PathVariable final Integer recipeId) {
         recipeService.deleteRecipeById(recipeId);
@@ -30,6 +30,5 @@ public class RecipeController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-
-}
+*/}
 

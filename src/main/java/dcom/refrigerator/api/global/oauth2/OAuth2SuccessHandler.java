@@ -94,7 +94,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        getRedirectStrategy().sendRedirect(request, response, "http://20.38.46.151:3000");
+        getRedirectStrategy().sendRedirect(request, response, "http://localhost:3000");
 
 
     }

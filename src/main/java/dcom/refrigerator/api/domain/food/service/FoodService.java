@@ -36,10 +36,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -50,7 +48,6 @@ public class FoodService {
     private final FoodDocumentRepository foodDocumentRepository;
     private final UserService userService;
     private final FoodImageService foodImageService;
-    private final FoodImageRepository foodImageRepository;
     private final IngredientService ingredientService;
     private final RecipeService recipeService;
     private final ElasticsearchOperations elasticsearchOperations;
