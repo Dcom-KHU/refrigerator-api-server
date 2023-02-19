@@ -17,11 +17,13 @@ public class RefrigeratorResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class WithIngredient {
+        private Integer id;
         private LocalDateTime expiredDate;
         private String name;
 
         public static WithIngredient of(Refrigerator refrigerator) {
             return WithIngredient.builder()
+                    .id(refrigerator.getId())
                     .expiredDate(refrigerator.getExpiredDate())
                     .name(refrigerator.getIngredient().getName())
                     .build();

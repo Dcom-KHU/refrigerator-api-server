@@ -1,25 +1,21 @@
 package dcom.refrigerator.api.domain.ingredient.controller;
 
 
-import dcom.refrigerator.api.domain.ingredient.Ingredient;
+import dcom.refrigerator.api.domain.ingredient.IngredientDocument;
 import dcom.refrigerator.api.domain.ingredient.dto.IngredientRequestDto;
 import dcom.refrigerator.api.domain.ingredient.service.IngredientService;
-import dcom.refrigerator.api.domain.user.dto.UserRequestDto;
-import dcom.refrigerator.api.global.security.config.Token;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @Api(tags = {"ingredient Controller"})
 @Slf4j
@@ -47,10 +43,10 @@ public class IngredientController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-
-
-
-
-
-
+    @ApiOperation("재료를 검색 합니다.")
+    @GetMapping("/search")
+    public ResponseEntity<List<IngredientDocument>> searchIngredient(@ApiParam(value="검색어", required = true)
+                                                                     @RequestParam String query) {
+        return ResponseEntity.ok(ingredientService.searchIngredient(query));
+    }
 }
