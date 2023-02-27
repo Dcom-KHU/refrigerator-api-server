@@ -135,6 +135,8 @@ git clone https://github.com/Dcom-KHU/refrigerator-api-server.git
 
 cd ./refrigerator-api-server
 
+[Write down {NAVER CLIENT_ID + SECRET} / {KAKAO CLIENT_ID + SECRET} / {JWT SECRET KEY} in /src/main/resources/application-oauth.yml] 
+
 docker-compose up -d
 
 sudo chmod 777 ./gradlew
