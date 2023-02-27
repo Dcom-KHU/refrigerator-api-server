@@ -133,13 +133,13 @@ source ~/.bashrc
 ```
 git clone https://github.com/Dcom-KHU/refrigerator-api-server.git
 
-docker-compose up -d
-
 cd ./refrigerator-api-server
 
-./gradlew build
+docker-compose up -d
 
 sudo chmod 777 ./gradlew
+
+./gradlew build
 
 java -jar ./build/libs/api-0.0.1-SNAPSHOT.jar
 ```
